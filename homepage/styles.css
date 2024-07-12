@@ -1,0 +1,64 @@
+body {
+    background-image: url("/project/bg.jpeg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    font-family: 'Courier New', Courier, monospace;
+    color: white;
+    text-align: center;
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(1.5px);
+    position: relative;
+}
+
+.container {
+    text-align: center;
+}
+
+.button {
+    background-color: rgba(156, 219, 166, 0.088);
+    border: none;
+    color: rgb(0, 0, 0);
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+    font-size: 20px;
+    margin: 20px auto;
+    cursor: pointer;
+    width: 150px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    border-radius: 20px;
+    font-family: 'Indie Flower', cursive;
+    font-weight: bold;
+}
+
+.button:hover {
+    box-shadow: 0 0 15px #613814;
+}
+
+a {
+    text-decoration: none;
+}
+
+h1 {
+    font-family: 'Ga Maamli', cursive;
+    font-size: 48px;
+    color: #64411e;
+    margin-bottom: 30px;
+    letter-spacing: 0.05cm;
+}
+
+.toggle-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 24px;
+    color: white;
+    cursor: pointer;
+}
+
