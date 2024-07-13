@@ -10,7 +10,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    backdrop-filter: blur(2px);
+    backdrop-filter: blur(1px);
     position: relative;
   }
   
@@ -24,9 +24,9 @@ body {
   
   h1 {
     font-family: 'Caesar Dressing', cursive;
-    font-size: 70px;
-    color: #d37c2f;
-    margin-bottom: 30px;
+    font-size: 90px;
+    color: #c67127;
+    margin-bottom: 40px;
     letter-spacing: 0.05cm;
     padding: 6px 17px;
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), /* White glow */
@@ -75,8 +75,8 @@ body {
     white-space: nowrap;
     will-change: box-shadow, transform;
     font-size: 19px;
-    margin: 20px auto;
-    width: 180px;
+    margin: 25px auto;
+    width: 190px;
   }
   
   .button-name:focus {
