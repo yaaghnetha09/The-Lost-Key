@@ -21,4 +21,3 @@ document.getElementById('music-toggle').onclick = function() {
     }
     isMusicPlaying = !isMusicPlaying;
 };
-
