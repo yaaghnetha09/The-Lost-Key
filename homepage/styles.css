@@ -1,9 +1,8 @@
 body {
-    background-image: url("/assets/images/homeBG.png");
+    background-image: url("/project/bg.jpeg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
-    font-family: 'Courier New', Courier, monospace;
     color: white;
     text-align: center;
     margin: 0;
@@ -11,54 +10,86 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    backdrop-filter: blur(1.5px);
+    backdrop-filter: blur(2px);
     position: relative;
-}
-
-.container {
+  }
+  
+  .container {
     text-align: center;
-}
-
-.button {
-    background-color: rgba(156, 219, 166, 0.088);
-    border: none;
-    color: rgb(0, 0, 0);
-    padding: 15px 32px;
-    text-align: center;
+  }
+  
+  .container a {
     text-decoration: none;
-    display: block;
-    font-size: 20px;
-    margin: 20px auto;
-    cursor: pointer;
-    width: 150px;
-    transition: background-color 0.3s, box-shadow 0.3s;
-    border-radius: 20px;
-    font-family: 'Indie Flower', cursive;
-    font-weight: bold;
-}
-
-.button:hover {
-    box-shadow: 0 0 15px #613814;
-}
-
-a {
-    text-decoration: none;
-}
-
-h1 {
-    font-family: 'Ga Maamli', cursive;
+  }
+  
+  h1 {
+    font-family: 'Caesar Dressing', cursive;
     font-size: 48px;
-    color: #64411e;
+    color: #d37c2f;
     margin-bottom: 30px;
     letter-spacing: 0.05cm;
-}
-
-.toggle-button {
+    padding: 6px 17px;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), /* White glow */
+                 0 0 20px rgba(255, 255, 255, 0.5), /* Wider white glow */
+                 0 0 30px rgba(255, 191, 0, 0.724), /* Gold glow */
+                 0 0 40px rgba(238, 160, 17, 0.918); /* Wider gold glow */
+    display: inline-block;
+  }
+  
+  /* Music toggle button */
+  .toggle-button {
     position: absolute;
     top: 20px;
     right: 20px;
     font-size: 24px;
     color: white;
     cursor: pointer;
-}
-
+  }
+  
+  /* Button styles */
+  .button-name {
+    align-items: center;
+    appearance: none;
+    background-color: #FCFCFD;
+    border-radius: 4px;
+    border-width: 0;
+    box-shadow: rgba(45, 35, 66, 0.2) 0 2px 4px, rgba(45, 35, 66, 0.15) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+    box-sizing: border-box;
+    color: #36395A;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    font-family: "JetBrains Mono", monospace;
+    height: 48px;
+    line-height: 1;
+    list-style: none;
+    padding-left: 16px;
+    padding-right: 16px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    transition: box-shadow .15s, transform .15s;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    white-space: nowrap;
+    will-change: box-shadow, transform;
+    font-size: 19px;
+    margin: 10px auto;
+    width: 150px;
+  }
+  
+  .button-name:focus {
+    box-shadow: #D6D6E7 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+  }
+  
+  .button-name:hover {
+    box-shadow: rgba(45, 35, 66, 0.3) 0 4px 8px, rgba(45, 35, 66, 0.2) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+    transform: translateY(-2px);
+  }
+  
+  .button-name:active {
+    box-shadow: #D6D6E7 0 3px 7px inset;
+    transform: translateY(2px);
+  }
+  
