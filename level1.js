@@ -64,4 +64,64 @@ function generateMaze() {
     scene.add(endPoint);
 }
 
+// Player movement and collision detection
+function handleKeyDown(event) {
+    const moveDistance = 0.1; // Smaller step size for smoother movement
+
+    switch (event.key) {
+        case 'ArrowUp':
+            player.position.z -= moveDistance;
+            break;
+        case 'ArrowDown':
+            player.position.z += moveDistance;
+            break;
+        case 'ArrowLeft':
+            player.position.x -= moveDistance;
+            break;
+        case 'ArrowRight':
+            player.position.x += moveDistance;
+            break;
+    }
+
+    camera.position.set(player.position.x, player.position.y + 0.5, player.position.z + 1);
+    camera.lookAt(player.position);
+
+    checkCollision();
+}
+
+function checkCollision() {
+    const halfMazeWidth = mazeWidth / 2;
+    const halfMazeHeight = mazeHeight / 2;
+
+    // Ensure player stays within maze boundaries
+    if (player.position.x < -halfMazeWidth) player.position.x = -halfMazeWidth;
+    if (player.position.x > halfMazeWidth) player.position.x = halfMazeWidth;
+    if (player.position.z < -halfMazeHeight) player.position.z = -halfMazeHeight;
+    if (player.position.z > halfMazeHeight) player.position.z = halfMazeHeight;
+
+    // Collision detection with walls
+    scene.children.forEach(child => {
+        if (child !== player && child.geometry instanceof THREE.BoxGeometry) {
+            const wallBox = new THREE.Box3().setFromObject(child);
+            const playerBox = new THREE.Box3().setFromObject(player);
+
+            if (playerBox.intersectsBox(wallBox)) {
+                // Simple collision response: move player back to previous position
+                switch (event.key) {
+                    case 'ArrowUp':
+                        player.position.z += moveDistance;
+                        break;
+                    case 'ArrowDown':
+                        player.position.z -= moveDistance;
+                        break;
+                    case 'ArrowLeft':
+                        player.position.x += moveDistance;
+                        break;
+                    case 'ArrowRight':
+                        player.position.x -= moveDistance;
+                        break;
+                }
+            }
+        }
+    });
 generateMaze();
