@@ -75,8 +75,8 @@ body {
     white-space: nowrap;
     will-change: box-shadow, transform;
     font-size: 19px;
-    margin: 10px auto;
-    width: 150px;
+    margin: 20px auto;
+    width: 180px;
   }
   
   .button-name:focus {
