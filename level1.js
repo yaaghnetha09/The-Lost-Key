@@ -63,6 +63,15 @@ function generateMaze() {
     endPoint.position.set(mazeWidth / 2 - 1, 0.25, mazeHeight / 2 - 1);
     scene.add(endPoint);
 }
+generateMaze();
+
+// Render loop
+function animate() {
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
+}
+
+animate();
 
 // Player movement and collision detection
 function handleKeyDown(event) {
@@ -124,4 +133,21 @@ function checkCollision() {
             }
         }
     });
+	  // Check if player reached the end point
+    const endPointBox = new THREE.Box3().setFromObject(endPoint);
+    const playerBox = new THREE.Box3().setFromObject(player);
+
+    if (playerBox.intersectsBox(endPointBox)) {
+        alert('You reached the end!');
+        generateMaze();
+    }
+}
+
+window.addEventListener('keydown', handleKeyDown);
+window.addEventListener('resize', () => {
+    const aspect = window.innerWidth / window.innerHeight;
+    camera.aspect = aspect;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
 generateMaze();
