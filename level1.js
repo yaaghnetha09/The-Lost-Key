@@ -43,12 +43,16 @@ function generateMaze() {
     floor.rotation.x = -Math.PI / 2;
     scene.add(floor);
 
+
+    const textureLoader = new THREE.TextureLoader();
+    const textureUrl = './assets/images/Bricks091_1K-JPG_Color.jpg'; 
+    const texture = textureLoader.load(textureUrl);
     // Generate new maze walls with more open paths
     for (let x = 0; x < mazeWidth; x++) {
         for (let y = 0; y < mazeHeight; y++) {
             if (Math.random() > 0.7) { // Reduced wall density
                 const wallGeometry = new THREE.BoxGeometry(1, 1, 1);
-                const wallMaterial = new THREE.MeshBasicMaterial({ color: 0x808080 });
+                const wallMaterial = new THREE.MeshBasicMaterial({map: texture });
                 const wall = new THREE.Mesh(wallGeometry, wallMaterial);
                 wall.position.set(x - mazeWidth / 2, 0.5, y - mazeHeight / 2);
                 scene.add(wall);
