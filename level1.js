@@ -154,9 +154,9 @@ function handleKeyDown(event) {
     player.rotation.y += rotationDelta;
 
     camera.position.set(
-        player.position.x - Math.sin(player.rotation.y) * 1.5,
-        player.position.y + 0.5,
-        player.position.z - Math.cos(player.rotation.y) * 1.5
+        player.position.x - Math.sin(player.rotation.y) * 0.9,
+        player.position.y + 0.45,
+        player.position.z - Math.cos(player.rotation.y) * 0.9
     );
     camera.lookAt(player.position);
 
