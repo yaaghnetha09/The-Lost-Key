@@ -1,7 +1,7 @@
 const scene = new THREE.Scene();
 const size = { width: window.innerWidth, height: window.innerHeight };
-const mazeWidth = size.width/100; 
-const mazeHeight = size.height/100;
+const mazeWidth = size.width / 100;
+const mazeHeight = size.height / 100;
 
 // Camera setup
 const camera = new THREE.PerspectiveCamera(75, size.width / size.height, 0.1, 1000);
@@ -11,7 +11,6 @@ scene.add(camera);
 const renderer = new THREE.WebGLRenderer({ canvas: document.querySelector(".webgl") });
 renderer.setSize(size.width, size.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
 
 // Lighting
 const ambientLight = new THREE.AmbientLight(0xffffff, 1);
@@ -25,27 +24,32 @@ scene.add(directionalLight);
 const playerGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
 const playerMaterial = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
 const player = new THREE.Mesh(playerGeometry, playerMaterial);
-player.position.set(-mazeWidth / 2 + 0.5, 0.25, -mazeHeight / 2 + 0.5);
+player.position.set(-mazeWidth / 2 + 1, 0.25, -mazeHeight / 2 + 1);
 scene.add(player);
 
 camera.position.set(player.position.x, player.position.y + 0.5, player.position.z + 1);
 camera.lookAt(player.position);
 
+// Maze walls and end point
+let mazeWalls = [];
+let endPoint;
+
 // Generate maze
 function generateMaze() {
     // Remove existing maze objects from the scene
     scene.children.forEach(child => {
-        if (child instanceof THREE.Mesh && child !== player) {
+        if (child instanceof THREE.Mesh && child != player) {
             scene.remove(child);
         }
     });
+    mazeWalls = [];
 
     // Create floor
     const floorGeometry = new THREE.PlaneGeometry(mazeWidth, mazeHeight);
     const floorMaterial = new THREE.MeshLambertMaterial({ color: 0xcccccc });
     const floor = new THREE.Mesh(floorGeometry, floorMaterial);
     floor.rotation.x = -Math.PI / 2;
-    floor.position.set(0, 0, 0); 
+    floor.position.set(0, 0, 0);
     scene.add(floor);
 
     const textureLoader = new THREE.TextureLoader();
@@ -55,10 +59,10 @@ function generateMaze() {
     // Set texture repeat to avoid stretching
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(1, size.height );
+    texture.repeat.set(1, size.height);
 
     // Calculate wall height based on screen height
-    const wallHeight = size.height ;
+    const wallHeight = size.height;
 
     // Generate new maze walls with more open paths
     for (let x = 0; x < mazeWidth; x++) {
@@ -69,6 +73,7 @@ function generateMaze() {
                 const wall = new THREE.Mesh(wallGeometry, wallMaterial);
                 wall.position.set(x - mazeWidth / 2, wallHeight / 2, y - mazeHeight / 2);
                 scene.add(wall);
+                mazeWalls.push(wall);
             }
         }
     }
@@ -80,10 +85,12 @@ function generateMaze() {
         const topWall = new THREE.Mesh(wallGeometry, wallMaterial);
         topWall.position.set(i, 1, -mazeHeight / 2);
         scene.add(topWall);
+        mazeWalls.push(topWall);
 
         const bottomWall = new THREE.Mesh(wallGeometry, wallMaterial);
         bottomWall.position.set(i, 1, mazeHeight / 2);
         scene.add(bottomWall);
+        mazeWalls.push(bottomWall);
     }
 
     for (let j = -mazeHeight / 2; j <= mazeHeight / 2; j++) {
@@ -91,19 +98,20 @@ function generateMaze() {
         const leftWall = new THREE.Mesh(wallGeometry, wallMaterial);
         leftWall.position.set(-mazeWidth / 2, 1, j);
         scene.add(leftWall);
+        mazeWalls.push(leftWall);
 
         const rightWall = new THREE.Mesh(wallGeometry, wallMaterial);
         rightWall.position.set(mazeWidth / 2, 1, j);
         scene.add(rightWall);
+        mazeWalls.push(rightWall);
     }
 
     // Set end point position
     const endPointGeometry = new THREE.SphereGeometry(0.25, 32, 32);
     const endPointMaterial = new THREE.MeshLambertMaterial({ color: 0xff0000 });
-    const endPoint = new THREE.Mesh(endPointGeometry, endPointMaterial);
+    endPoint = new THREE.Mesh(endPointGeometry, endPointMaterial);
     endPoint.position.set(mazeWidth / 2 - 1, 0.25, mazeHeight / 2 - 1);
     scene.add(endPoint);
-
 }
 generateMaze();
 
@@ -116,74 +124,65 @@ function animate() {
 animate();
 
 // Player movement and collision detection
+let lastKey = '';
+
 function handleKeyDown(event) {
     const moveDistance = 0.1; // Smaller step size for smoother movement
+    let rotationDelta = 0;
+    const rotationSpeed = 0.05; // Speed of rotation
+
+    lastKey = event.key;
+    const prevPosition = player.position.clone();
 
     switch (event.key) {
         case 'ArrowUp':
-            player.position.z -= moveDistance;
+            player.position.x += Math.sin(player.rotation.y) * moveDistance;
+            player.position.z += Math.cos(player.rotation.y) * moveDistance;
             break;
         case 'ArrowDown':
-            player.position.z += moveDistance;
+            player.position.x -= Math.sin(player.rotation.y) * moveDistance;
+            player.position.z -= Math.cos(player.rotation.y) * moveDistance;
             break;
         case 'ArrowLeft':
-            player.position.x -= moveDistance;
+            rotationDelta = rotationSpeed;
             break;
         case 'ArrowRight':
-            player.position.x += moveDistance;
+            rotationDelta = -rotationSpeed;
             break;
     }
 
-    camera.position.set(player.position.x, player.position.y + 0.5, player.position.z + 1);
+    player.rotation.y += rotationDelta;
+
+    camera.position.set(
+        player.position.x - Math.sin(player.rotation.y) * 1.5,
+        player.position.y + 0.5,
+        player.position.z - Math.cos(player.rotation.y) * 1.5
+    );
     camera.lookAt(player.position);
 
-    checkCollision();
+    if (checkCollision()) {
+        player.position.copy(prevPosition);
+    }
 }
 
 function checkCollision() {
-    const halfMazeWidth = mazeWidth / 2;
-    const halfMazeHeight = mazeHeight / 2;
+    const playerBox = new THREE.Box3().setFromObject(player);
 
-    // Ensure player stays within maze boundaries
-    if (player.position.x < -halfMazeWidth) player.position.x = -halfMazeWidth;
-    if (player.position.x > halfMazeWidth) player.position.x = halfMazeWidth;
-    if (player.position.z < -halfMazeHeight) player.position.z = -halfMazeHeight;
-    if (player.position.z > halfMazeHeight) player.position.z = halfMazeHeight;
-
-    // Collision detection with walls
-    scene.children.forEach(child => {
-        if (child !== player && child.geometry instanceof THREE.BoxGeometry) {
-            const wallBox = new THREE.Box3().setFromObject(child);
-            const playerBox = new THREE.Box3().setFromObject(player);
-
-            if (playerBox.intersectsBox(wallBox)) {
-                // Simple collision response: move player back to previous position
-                switch (event.key) {
-                    case 'ArrowUp':
-                        player.position.z += moveDistance;
-                        break;
-                    case 'ArrowDown':
-                        player.position.z -= moveDistance;
-                        break;
-                    case 'ArrowLeft':
-                        player.position.x += moveDistance;
-                        break;
-                    case 'ArrowRight':
-                        player.position.x -= moveDistance;
-                        break;
-                }
-            }
+    for (let i = 0; i < mazeWalls.length; i++) {
+        const wallBox = new THREE.Box3().setFromObject(mazeWalls[i]);
+        if (playerBox.intersectsBox(wallBox)) {
+            return true;
         }
-    });
+    }
 
     // Check if player reached the end point
     const endPointBox = new THREE.Box3().setFromObject(endPoint);
-    const playerBox = new THREE.Box3().setFromObject(player);
-
     if (playerBox.intersectsBox(endPointBox)) {
         alert('You reached the end!');
         generateMaze();
     }
+
+    return false;
 }
 
 window.addEventListener('keydown', handleKeyDown);
@@ -197,6 +196,3 @@ window.addEventListener('resize', () => {
     size.height = window.innerHeight;
     generateMaze();
 });
-
-
-
