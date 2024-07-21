@@ -77,34 +77,33 @@ function generateMaze() {
             }
         }
     }
-    const wallGeometry = new THREE.BoxGeometry(1, 2, 1);
-    const wallMaterial = new THREE.MeshLambertMaterial({ color: 0x8B4513 });
+
+    // boundary wall condition start
+    const boundaryWallGeometry = new THREE.BoxGeometry(1, wallHeight, 1);
+    const boundaryWallMaterial = new THREE.MeshLambertMaterial({ map: texture });
 
     for (let i = -mazeWidth / 2; i <= mazeWidth / 2; i++) {
         // Top and bottom walls
-        const topWall = new THREE.Mesh(wallGeometry, wallMaterial);
-        topWall.position.set(i, 1, -mazeHeight / 2);
+        const topWall = new THREE.Mesh(boundaryWallGeometry, boundaryWallMaterial);
+        topWall.position.set(i, wallHeight / 2, -mazeHeight / 2);
         scene.add(topWall);
-        mazeWalls.push(topWall);
 
-        const bottomWall = new THREE.Mesh(wallGeometry, wallMaterial);
-        bottomWall.position.set(i, 1, mazeHeight / 2);
+        const bottomWall = new THREE.Mesh(boundaryWallGeometry, boundaryWallMaterial);
+        bottomWall.position.set(i, wallHeight / 2, mazeHeight / 2);
         scene.add(bottomWall);
-        mazeWalls.push(bottomWall);
     }
 
-    for (let j = -mazeHeight / 2; j <= mazeHeight / 2; j++) {
+    for (let i = -mazeHeight / 2; i <= mazeHeight / 2; i++) {
         // Left and right walls
-        const leftWall = new THREE.Mesh(wallGeometry, wallMaterial);
-        leftWall.position.set(-mazeWidth / 2, 1, j);
+        const leftWall = new THREE.Mesh(boundaryWallGeometry, boundaryWallMaterial);
+        leftWall.position.set(-mazeWidth / 2, wallHeight / 2, i);
         scene.add(leftWall);
-        mazeWalls.push(leftWall);
 
-        const rightWall = new THREE.Mesh(wallGeometry, wallMaterial);
-        rightWall.position.set(mazeWidth / 2, 1, j);
+        const rightWall = new THREE.Mesh(boundaryWallGeometry, boundaryWallMaterial);
+        rightWall.position.set(mazeWidth / 2, wallHeight / 2, i);
         scene.add(rightWall);
-        mazeWalls.push(rightWall);
     }
+    // boundary wall condition end
 
     // Set end point position
     const endPointGeometry = new THREE.SphereGeometry(0.25, 32, 32);
