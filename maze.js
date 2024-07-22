@@ -1,5 +1,5 @@
 // Maze Gneration using Recursive Backtracking Algorithm
-
+// Bunch of cell in a grid having four lines : top, right, bottom, left.
 var cols, rows;
 var w = 40; // width
 var grid = []; // 1D array
@@ -28,17 +28,26 @@ class Cell {
     constructor(i, j) {
         this.i = i; // Column number
         this.j = j; // Row number
-    }
+        this.walls = [true, true, true, true];
+;    }
 
     show() {
         var x = this.i*w;
         var y = this.j*w;
         stroke(255);
         
-        line(x,y,x+w,y);
-        line(x+w, y, x+w, y+w);
-        line(x+w, y+w, x, y+w);
-        line(x, y+w, x, y);
+        if (this.walls[0]) {
+            line(x, y, x+w, y); // top
+        }
+        if (this.walls[1]) {
+            line(x+w, y, x+w, y+w); // right
+        }
+        if (this.walls[2]) {
+            line(x+w, y+w, x, y+w); // bottom
+        }
+        if (this.walls[3]) {
+            line(x, y+w, x, y); // left
+        }
         // noFill();
         // rect(x, y, w, w);
     }
