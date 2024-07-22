@@ -46,7 +46,7 @@ function generateMaze() {
 
     // Load the floor texture
     const textureLoader = new THREE.TextureLoader();
-    const floorTextureUrl = './assets/textures/floor.jpg';
+    const floorTextureUrl = './assets/textures/floor2.jpg';
     const floorTexture = textureLoader.load(floorTextureUrl);
 
     // Set texture repeat to avoid stretching
@@ -62,7 +62,7 @@ function generateMaze() {
     floor.position.set(0, 0, 0);
     scene.add(floor);
    //wall texture
-    const wallTextureUrl = './assets/textures/wall';
+    const wallTextureUrl = './assets/textures/wall2.jpg';
     const wallTexture = textureLoader.load(wallTextureUrl);
 
     // Set texture repeat for walls
