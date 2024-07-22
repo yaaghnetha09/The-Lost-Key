@@ -53,7 +53,7 @@ function generateMaze() {
     scene.add(floor);
 
     const textureLoader = new THREE.TextureLoader();
-    const textureUrl = './assets/images/Bricks091_1K-JPG_Color.jpg';
+    const textureUrl = 'https://i1.wp.com/img.talkandroid.com/uploads/2012/05/Temple_Run_Wallpaper_A.png';
     const texture = textureLoader.load(textureUrl);
 
     // Set texture repeat to avoid stretching
