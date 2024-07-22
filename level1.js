@@ -44,22 +44,31 @@ function generateMaze() {
     });
     mazeWalls = [];
 
+    // Load the floor texture
+    const textureLoader = new THREE.TextureLoader();
+    const floorTextureUrl = './assets/textures/floor.png';
+    const floorTexture = textureLoader.load(floorTextureUrl);
+
+    // Set texture repeat to avoid stretching
+    floorTexture.wrapS = THREE.RepeatWrapping;
+    floorTexture.wrapT = THREE.RepeatWrapping;
+    floorTexture.repeat.set(mazeWidth, mazeHeight);
+
     // Create floor
     const floorGeometry = new THREE.PlaneGeometry(mazeWidth, mazeHeight);
-    const floorMaterial = new THREE.MeshLambertMaterial({ color: 0xcccccc });
+    const floorMaterial = new THREE.MeshLambertMaterial({ map: floorTexture });
     const floor = new THREE.Mesh(floorGeometry, floorMaterial);
     floor.rotation.x = -Math.PI / 2;
     floor.position.set(0, 0, 0);
     scene.add(floor);
+   //wall texture
+    const wallTextureUrl = './assets/textures/wall.png';
+    const wallTexture = textureLoader.load(wallTextureUrl);
 
-    const textureLoader = new THREE.TextureLoader();
-    const textureUrl = 'https://i1.wp.com/img.talkandroid.com/uploads/2012/05/Temple_Run_Wallpaper_A.png';
-    const texture = textureLoader.load(textureUrl);
-
-    // Set texture repeat to avoid stretching
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(1, size.height);
+    // Set texture repeat for walls
+    wallTexture.wrapS = THREE.RepeatWrapping;
+    wallTexture.wrapT = THREE.RepeatWrapping;
+    wallTexture.repeat.set(1, size.height);
 
     // Calculate wall height based on screen height
     const wallHeight = size.height;
@@ -69,7 +78,7 @@ function generateMaze() {
         for (let y = 0; y < mazeHeight; y++) {
             if (Math.random() > 0.7) { // Reduced wall density
                 const wallGeometry = new THREE.BoxGeometry(1, wallHeight, 1);
-                const wallMaterial = new THREE.MeshLambertMaterial({ map: texture });
+                const wallMaterial = new THREE.MeshLambertMaterial({ map: wallTexture });
                 const wall = new THREE.Mesh(wallGeometry, wallMaterial);
                 wall.position.set(x - mazeWidth / 2, wallHeight / 2, y - mazeHeight / 2);
                 scene.add(wall);
@@ -80,7 +89,7 @@ function generateMaze() {
 
     // boundary wall condition start
     const boundaryWallGeometry = new THREE.BoxGeometry(1, wallHeight, 1);
-    const boundaryWallMaterial = new THREE.MeshLambertMaterial({ map: texture });
+    const boundaryWallMaterial = new THREE.MeshLambertMaterial({ map: wallTexture });
 
     for (let i = -mazeWidth / 2; i <= mazeWidth / 2; i++) {
         // Top and bottom walls
