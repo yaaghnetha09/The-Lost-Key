@@ -4,6 +4,7 @@ var cols, rows;
 var w = 40; // width
 var grid = []; // 1D array
 var current;
+var stack = []; // Implementing backtracking using stack (array usage)
 
 function setup() {
     createCanvas(400, 400);
@@ -31,11 +32,20 @@ function draw() {
     // STEP 1
     var next = current.check_neighbors();
     if (next) {
+        // STEP 2
+        stack.push(current); // Pushing the current cell to stack; // to track the path, so to backtrack if struck is easy.
         next.visited = true;
         // STEP 3
         removeWalls(current, next);
         // STEP 4
         current = next;
+    } else {
+        if(stack.empty() != 0) // if stack is empty pop the last cell; 
+        // also if there are no neighbors and no current cell i.e if struck to backtrack
+        // when no available unvisited neighbors i.e neighbors function returns 'undefined'
+        {
+            current = stack.pop();
+        }
     }
 }
 
