@@ -40,7 +40,7 @@ function draw() {
         // STEP 4
         current = next;
     } else {
-        if(stack.empty() != 0) // if stack is empty pop the last cell; 
+        if(stack.length > 0) // if stack is empty pop the last cell; 
         // also if there are no neighbors and no current cell i.e if struck to backtrack
         // when no available unvisited neighbors i.e neighbors function returns 'undefined'
         {
@@ -141,7 +141,7 @@ function removeWalls(a, b) {
     if ( y === 1) {
         a.walls[0] = false;
         b.walls[2] = false;
-    } else if (y == -1) {
+    } else if (y === -1) {
         a.walls[2] = false;
         b.walls[0] = false;
     }
