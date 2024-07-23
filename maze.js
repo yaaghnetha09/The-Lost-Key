@@ -1,4 +1,5 @@
-// // Maze Gneration using Recursive Backtracking Algorithm
+// // Maze Gneration using Recursive Backtracking Algorithm using Depth First Search Traversal 
+// // Sources : https://en.wikipedia.org/wiki/Maze_generation_algorithm#Randomized_depth-first_search
 // // Bunch of cell in a grid having four lines : top, right, bottom, left.
 var cols, rows;
 var w = 40; // width
@@ -50,7 +51,7 @@ function draw() {
 }
 
 function index(i, j) {
-    if (i < 0 || j < 0 || i > cols - 1 || j > rows - 1) {
+    if (i < 0 || j < 0 || i >= cols || j >= rows) {
         return -1;
     }
     return i + j * cols;
