@@ -27,6 +27,7 @@ function draw() {
     }
 
     current.visited = true;
+    current.highlight();
     // STEP 1
     var next = current.check_neighbors();
     if (next) {
@@ -80,6 +81,14 @@ class Cell {
         } else {
             return undefined;
         }
+    }
+
+    highlight() {
+        var x = this.i*w;
+        var y = this.j*w;
+        noStroke();
+        fill(0, 0, 255, 100);
+        rect(x, y, w, w);
     }
 
     show() {
