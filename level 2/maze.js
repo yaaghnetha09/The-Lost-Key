@@ -50,6 +50,12 @@ function draw() {
             current = stack.pop();
         }
     }
+
+    // Update maze data after maze generation is complete
+    if (stack.length === 0 && current === grid[0]) {
+        updateMazeData();
+    }
+
 }
 
 function index(i, j) {
