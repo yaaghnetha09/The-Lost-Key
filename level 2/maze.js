@@ -6,6 +6,8 @@ var w = 40; // width
 var grid = []; // 1D array
 var current;
 var stack = []; // Implementing backtracking using stack (array usage)
+var mazeData = [];
+
 
 function setup() {
     createCanvas(400, 400);
@@ -146,4 +148,21 @@ function removeWalls(a, b) {
         a.walls[2] = false;
         b.walls[0] = false;
     }
+}
+
+// Function to update maze data after generation is complete
+function updateMazeData() {
+    mazeData = [];
+    for (var j = 0; j < rows; j++) {
+        var row = [];
+        for (var i = 0; i < cols; i++) {
+            var cell = grid[index(i, j)];
+            row.push({
+                walls: cell.walls,
+                visited: cell.visited
+            });
+        }
+        mazeData.push(row);
+    }
+    console.log(mazeData);
 }
