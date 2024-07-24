@@ -170,5 +170,7 @@ function updateMazeData() {
         }
         mazeData.push(row);
     }
+    
     console.log(mazeData);
+    // Store the maze data in the global variable declared in index.html
 }
