@@ -1,7 +1,7 @@
 const scene = new THREE.Scene();
 const size = { width: window.innerWidth, height: window.innerHeight };
-const mazeWidth = size.width / 100;
-const mazeHeight = size.height / 100;
+const mazeWidth = Math.floor(size.width / 100);
+const mazeHeight = Math.floor(size.height / 100);
 
 // Camera setup
 const camera = new THREE.PerspectiveCamera(75, size.width / size.height, 0.1, 1000);
@@ -34,25 +34,40 @@ camera.lookAt(player.position);
 let mazeWalls = [];
 let endPoint;
 
+// Wall texture
+const textureLoader = new THREE.TextureLoader();
+const wallTextureUrl = './assets/textures/wall2.jpg';
+const wallTexture = textureLoader.load(wallTextureUrl);
+
+// Load the floor texture
+const floorTextureUrl = './assets/textures/floor2.jpg';
+const floorTexture = textureLoader.load(floorTextureUrl);
+
+// Set texture repeat to avoid stretching
+floorTexture.wrapS = THREE.RepeatWrapping;
+floorTexture.wrapT = THREE.RepeatWrapping;
+floorTexture.repeat.set(mazeWidth, mazeHeight);
+
+// Function to create a wall
+function createWall(x, y, z) {
+    const wallGeometry = new THREE.BoxGeometry(1, 2, 1); // Ensure consistent wall height
+    const wallMaterial = new THREE.MeshLambertMaterial({ map: wallTexture });
+    const wall = new THREE.Mesh(wallGeometry, wallMaterial);
+    wall.position.set(x, y, z);
+    scene.add(wall);
+    mazeWalls.push(wall);
+}
+
 // Generate maze
 function generateMaze() {
     // Remove existing maze objects from the scene
-    scene.children.forEach(child => {
-        if (child instanceof THREE.Mesh && child != player) {
+    for (let i = scene.children.length - 1; i >= 0; i--) {
+        const child = scene.children[i];
+        if (child instanceof THREE.Mesh && child !== player) {
             scene.remove(child);
         }
-    });
+    }
     mazeWalls = [];
-
-    // Load the floor texture
-    const textureLoader = new THREE.TextureLoader();
-    const floorTextureUrl = './assets/textures/floor2.jpg';
-    const floorTexture = textureLoader.load(floorTextureUrl);
-
-    // Set texture repeat to avoid stretching
-    floorTexture.wrapS = THREE.RepeatWrapping;
-    floorTexture.wrapT = THREE.RepeatWrapping;
-    floorTexture.repeat.set(mazeWidth, mazeHeight);
 
     // Create floor
     const floorGeometry = new THREE.PlaneGeometry(mazeWidth, mazeHeight);
@@ -61,58 +76,25 @@ function generateMaze() {
     floor.rotation.x = -Math.PI / 2;
     floor.position.set(0, 0, 0);
     scene.add(floor);
-   //wall texture
-    const wallTextureUrl = './assets/textures/wall2.jpg';
-    const wallTexture = textureLoader.load(wallTextureUrl);
 
-    // Set texture repeat for walls
-    wallTexture.wrapS = THREE.RepeatWrapping;
-    wallTexture.wrapT = THREE.RepeatWrapping;
-    wallTexture.repeat.set(1, size.height);
+    // Boundary walls
+    for (let x = -mazeWidth / 2; x <= mazeWidth / 2; x++) {
+        createWall(x, 1, -mazeHeight / 2);
+        createWall(x, 1, mazeHeight / 2);
+    }
+    for (let y = -mazeHeight / 2; y <= mazeHeight / 2; y++) {
+        createWall(-mazeWidth / 2, 1, y);
+        createWall(mazeWidth / 2, 1, y);
+    }
 
-    // Calculate wall height based on screen height
-    const wallHeight = size.height;
-
-    // Generate new maze walls with more open paths
-    for (let x = 0; x < mazeWidth; x++) {
-        for (let y = 0; y < mazeHeight; y++) {
-            if (Math.random() > 0.7) { // Reduced wall density
-                const wallGeometry = new THREE.BoxGeometry(1, wallHeight, 1);
-                const wallMaterial = new THREE.MeshLambertMaterial({ map: wallTexture });
-                const wall = new THREE.Mesh(wallGeometry, wallMaterial);
-                wall.position.set(x - mazeWidth / 2, wallHeight / 2, y - mazeHeight / 2);
-                scene.add(wall);
-                mazeWalls.push(wall);
+    // Generate maze walls
+    for (let x = 1; x < mazeWidth - 1; x++) {
+        for (let y = 1; y < mazeHeight - 1; y++) {
+            if (Math.random() > 0.7) {
+                createWall(x - mazeWidth / 2, 1, y - mazeHeight / 2);
             }
         }
     }
-
-    // boundary wall condition start
-    const boundaryWallGeometry = new THREE.BoxGeometry(1, wallHeight, 1);
-    const boundaryWallMaterial = new THREE.MeshLambertMaterial({ map: wallTexture });
-
-    for (let i = -mazeWidth / 2; i <= mazeWidth / 2; i++) {
-        // Top and bottom walls
-        const topWall = new THREE.Mesh(boundaryWallGeometry, boundaryWallMaterial);
-        topWall.position.set(i, wallHeight / 2, -mazeHeight / 2);
-        scene.add(topWall);
-
-        const bottomWall = new THREE.Mesh(boundaryWallGeometry, boundaryWallMaterial);
-        bottomWall.position.set(i, wallHeight / 2, mazeHeight / 2);
-        scene.add(bottomWall);
-    }
-
-    for (let i = -mazeHeight / 2; i <= mazeHeight / 2; i++) {
-        // Left and right walls
-        const leftWall = new THREE.Mesh(boundaryWallGeometry, boundaryWallMaterial);
-        leftWall.position.set(-mazeWidth / 2, wallHeight / 2, i);
-        scene.add(leftWall);
-
-        const rightWall = new THREE.Mesh(boundaryWallGeometry, boundaryWallMaterial);
-        rightWall.position.set(mazeWidth / 2, wallHeight / 2, i);
-        scene.add(rightWall);
-    }
-    // boundary wall condition end
 
     // Set end point position
     const endPointGeometry = new THREE.SphereGeometry(0.25, 32, 32);
@@ -121,6 +103,8 @@ function generateMaze() {
     endPoint.position.set(mazeWidth / 2 - 1, 0.25, mazeHeight / 2 - 1);
     scene.add(endPoint);
 }
+
+// Initial maze generation
 generateMaze();
 
 // Render loop
@@ -202,5 +186,13 @@ window.addEventListener('resize', () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
     size.width = window.innerWidth;
     size.height = window.innerHeight;
-    generateMaze();
 });
+
+
+
+
+
+
+
+
+  
