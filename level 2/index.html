@@ -1,26 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lost Key</title>
-    <script>
-      // Define a global variable for the maze data
-      var mazeData = [];
-    </script>
-    <script type="importmap">
-			{
-				"imports": {
-					"three": "https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js",
-                    "jsm/": "https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/"
-                  }  
-			}
-		</script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-    <script src="maze.js"></script> <!-- Maze generation script -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="main.js" defer></script> <!-- 3D setup script -->
-  </head>
-  <body>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Maze</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script type="module" src="main.js"></script>
+</body>
 </html>
