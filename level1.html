@@ -4,23 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Intro</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <title>Maze Game</title>
     <style>
         body { margin: 0; overflow: hidden; }
-        canvas { display: block; }
+        canvas.webgl { display: block; }
+        #mini-map-container { position: absolute; top: 10px; left: 10px; border: 2px solid #000; }
+        #mini-map { display: block; }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/PointerLockControls.js"></script>
 </head>
 
 <body>
-    <canvas class="webgl" width="720" height="500" style="width: 700px; height: 500px;"></canvas>
-    <script src="./level1.js"></script>
     <canvas class="webgl"></canvas>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/PointerLockControls.js"></script>
+    <div id="mini-map-container">
+        <img id="mini-map" alt="Mini-Map">
+    </div>
     <script src="level1.js"></script>
 </body>
 
 </html>
-
