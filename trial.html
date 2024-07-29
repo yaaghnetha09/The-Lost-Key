@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Maze</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script type="module">
+        import * as THREE from 'https://cdn.skypack.dev/three@0.130.1';
+
+        const mazeData = [{"i":0,"j":0,"walls":[true,true,false,true]},{"i":1,"j":0,"walls":[true,false,false,true]},{"i":2,"j":0,"walls":[true,false,true,false]},{"i":3,"j":0,"walls":[true,false,true,false]},{"i":4,"j":0,"walls":[true,false,true,false]},{"i":5,"j":0,"walls":[true,false,true,false]},{"i":6,"j":0,"walls":[true,false,false,false]},{"i":7,"j":0,"walls":[true,false,true,false]},{"i":8,"j":0,"walls":[true,false,true,false]},{"i":9,"j":0,"walls":[true,true,false,false]},{"i":0,"j":1,"walls":[false,true,false,true]},{"i":1,"j":1,"walls":[false,true,true,true]},{"i":2,"j":1,"walls":[true,false,false,true]},{"i":3,"j":1,"walls":[true,false,true,false]},{"i":4,"j":1,"walls":[true,false,true,false]},{"i":5,"j":1,"walls":[true,true,false,false]},{"i":6,"j":1,"walls":[false,false,true,true]},{"i":7,"j":1,"walls":[true,false,false,false]},{"i":8,"j":1,"walls":[true,true,true,false]},{"i":9,"j":1,"walls":[false,true,false,true]},{"i":0,"j":2,"walls":[false,false,true,true]},{"i":1,"j":2,"walls":[true,false,true,false]},{"i":2,"j":2,"walls":[false,true,true,false]},{"i":3,"j":2,"walls":[true,true,false,true]},{"i":4,"j":2,"walls":[true,false,false,true]},{"i":5,"j":2,"walls":[false,true,true,false]},{"i":6,"j":2,"walls":[true,false,true,true]},{"i":7,"j":2,"walls":[false,true,true,false]},{"i":8,"j":2,"walls":[true,false,false,true]},{"i":9,"j":2,"walls":[false,true,false,false]},{"i":0,"j":3,"walls":[true,false,false,true]},{"i":1,"j":3,"walls":[true,true,false,false]},{"i":2,"j":3,"walls":[true,false,false,true]},{"i":3,"j":3,"walls":[false,true,false,false]},{"i":4,"j":3,"walls":[false,true,false,true]},{"i":5,"j":3,"walls":[true,false,true,true]},{"i":6,"j":3,"walls":[true,false,false,false]},{"i":7,"j":3,"walls":[true,false,true,false]},{"i":8,"j":3,"walls":[false,true,true,false]},{"i":9,"j":3,"walls":[false,true,true,true]},{"i":0,"j":4,"walls":[false,true,false,true]},{"i":1,"j":4,"walls":[false,false,true,true]},{"i":2,"j":4,"walls":[false,true,false,false]},{"i":3,"j":4,"walls":[false,true,true,true]},{"i":4,"j":4,"walls":[false,false,true,true]},{"i":5,"j":4,"walls":[true,true,false,false]},{"i":6,"j":4,"walls":[false,false,false,true]},{"i":7,"j":4,"walls":[true,false,true,false]},{"i":8,"j":4,"walls":[true,false,true,false]},{"i":9,"j":4,"walls":[true,true,false,false]},{"i":0,"j":5,"walls":[false,false,false,true]},{"i":1,"j":5,"walls":[true,true,false,false]},{"i":2,"j":5,"walls":[false,true,true,true]},{"i":3,"j":5,"walls":[true,false,false,true]},{"i":4,"j":5,"walls":[true,false,true,false]},{"i":5,"j":5,"walls":[false,true,true,false]},{"i":6,"j":5,"walls":[false,false,true,true]},{"i":7,"j":5,"walls":[true,true,false,false]},{"i":8,"j":5,"walls":[true,false,false,true]},{"i":9,"j":5,"walls":[false,true,false,false]},{"i":0,"j":6,"walls":[false,true,false,true]},{"i":1,"j":6,"walls":[false,true,false,true]},{"i":2,"j":6,"walls":[true,false,false,true]},{"i":3,"j":6,"walls":[false,true,true,false]},{"i":4,"j":6,"walls":[true,false,true,true]},{"i":5,"j":6,"walls":[true,false,false,false]},{"i":6,"j":6,"walls":[true,true,false,false]},{"i":7,"j":6,"walls":[false,true,true,true]},{"i":8,"j":6,"walls":[false,true,false,true]},{"i":9,"j":6,"walls":[false,true,true,true]},{"i":0,"j":7,"walls":[false,true,true,true]},{"i":1,"j":7,"walls":[false,true,false,true]},{"i":2,"j":7,"walls":[false,true,false,true]},{"i":3,"j":7,"walls":[true,false,false,true]},{"i":4,"j":7,"walls":[true,false,true,false]},{"i":5,"j":7,"walls":[false,true,true,false]},{"i":6,"j":7,"walls":[false,false,true,true]},{"i":7,"j":7,"walls":[true,true,false,false]},{"i":8,"j":7,"walls":[false,false,true,true]},{"i":9,"j":7,"walls":[true,true,false,false]},{"i":0,"j":8,"walls":[true,false,false,true]},{"i":1,"j":8,"walls":[false,true,true,false]},{"i":2,"j":8,"walls":[false,true,false,true]},{"i":3,"j":8,"walls":[false,false,true,true]},{"i":4,"j":8,"walls":[true,true,false,false]},{"i":5,"j":8,"walls":[true,false,false,true]},{"i":6,"j":8,"walls":[true,false,true,false]},{"i":7,"j":8,"walls":[false,true,true,false]},{"i":8,"j":8,"walls":[true,false,false,true]},{"i":9,"j":8,"walls":[false,true,false,false]},{"i":0,"j":9,"walls":[false,false,true,true]},{"i":1,"j":9,"walls":[true,false,true,false]},{"i":2,"j":9,"walls":[false,false,true,false]},{"i":3,"j":9,"walls":[true,false,true,false]},{"i":4,"j":9,"walls":[false,true,true,false]},{"i":5,"j":9,"walls":[false,false,true,true]},{"i":6,"j":9,"walls":[true,false,true,false]},{"i":7,"j":9,"walls":[true,false,true,false]},{"i":8,"j":9,"walls":[false,true,true,false]},{"i":9,"j":9,"walls":[false,true,true,true]}];
+        
+        // Basic Three.js setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+        const pointLight = new THREE.PointLight(0xffffff, 1);
+        pointLight.position.set(50, 50, 50);
+        scene.add(pointLight);
+
+        // Wall dimensions
+        const wallHeight = 1;
+        const wallThickness = 0.1;
+        const cellSize = 1;
+
+        // Create walls based on maze data
+        mazeData.forEach(cell => {
+            const { i, j, walls } = cell;
+            const x = i * cellSize;
+            const z = j * cellSize;
+
+            if (walls[0]) { // Top wall
+                createWall(x, z - cellSize / 2, 0, Math.PI / 2);
+            }
+            if (walls[1]) { // Right wall
+                createWall(x + cellSize / 2, z, 0, 0);
+            }
+            if (walls[2]) { // Bottom wall
+                createWall(x, z + cellSize / 2, 0, Math.PI / 2);
+            }
+            if (walls[3]) { // Left wall
+                createWall(x - cellSize / 2, z, 0, 0);
+            }
+        });
+
+        function createWall(x, z, yRotation, zRotation) {
+            const geometry = new THREE.BoxGeometry(cellSize, wallHeight, wallThickness);
+            const material = new THREE.MeshStandardMaterial({ color: 0x808080 });
+            const wall = new THREE.Mesh(geometry, material);
+            wall.position.set(x, wallHeight / 2, z);
+            wall.rotation.y = yRotation;
+            wall.rotation.z = zRotation;
+            scene.add(wall);
+        }
+
+        camera.position.y = 5;
+        camera.position.z = 10;
+        camera.rotation.x = -Math.PI / 4;
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        }
+        animate();
+    </script>
+</body>
+</html>
