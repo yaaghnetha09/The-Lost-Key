@@ -29,6 +29,15 @@ wallHeight = 1;
 wallWidth = 0.1;
 cellSize = 1;
 
+// Fetch the maze data
+fetch('mazeData.json')
+  .then(response => response.json())
+  .then(mazeData => {
+    createMaze(mazeData);
+    animate();
+  })
+  .catch(error => console.error('Error fetching the maze data:', error));
+
 // create maze walls using mazeData
 mazeData.forEach(cell => {
     const { i, j, walls } = cell;
