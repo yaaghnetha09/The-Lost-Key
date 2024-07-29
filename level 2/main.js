@@ -29,4 +29,20 @@ wallHeight = 1;
 wallWidth = 0.1;
 cellSize = 1;
 
-renderer.render(scene, camera);
+// create wall
+const createWall = (start, end) => {
+    const geometry = new THREE.BoxGeometry(0.1, wallHeight, start.distanceTo(end));
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const wall = new THREE.Mesh(geometry, material);
+    wall.position.set((start.x + end.x) / 2, wallHeight / 2, (start.z + end.z) / 2);
+    wall.lookAt(end); // Rotate to face the end point
+    scene.add(wall);
+};
+
+function animate() {
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
+}
+animate();
+
+// renderer.render(scene, camera);
