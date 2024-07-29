@@ -39,24 +39,38 @@ fetch('mazeData.json')
   .catch(error => console.error('Error fetching the maze data:', error));
 
 // create maze walls using mazeData
-mazeData.forEach(cell => {
-    const { i, j, walls } = cell;
-    const x = i * cellSize;
-    const z = j * cellSize;
-
-    if (walls[0]) {
-        createWall();
-    }
-    if (walls[1]) {
-        createWall();
-    }
-    if (walls[2]) {
-        createWall();
-    }
-    if (walls[3]) {
-        createWall();
-    }
-});
+function createMaze(mazeData) {
+    mazeData.forEach(cell => {
+      const { i, j, walls } = cell;
+      const x = i * cellSize;
+      const z = j * cellSize;
+  
+      if (walls[0]) { // Top wall
+        createWall(
+          new THREE.Vector3(x - cellSize / 2, 0, z - cellSize / 2),
+          new THREE.Vector3(x + cellSize / 2, 0, z - cellSize / 2)
+        );
+      }
+      if (walls[1]) { // Right wall
+        createWall(
+          new THREE.Vector3(x + cellSize / 2, 0, z - cellSize / 2),
+          new THREE.Vector3(x + cellSize / 2, 0, z + cellSize / 2)
+        );
+      }
+      if (walls[2]) { // Bottom wall
+        createWall(
+          new THREE.Vector3(x - cellSize / 2, 0, z + cellSize / 2),
+          new THREE.Vector3(x + cellSize / 2, 0, z + cellSize / 2)
+        );
+      }
+      if (walls[3]) { // Left wall
+        createWall(
+          new THREE.Vector3(x - cellSize / 2, 0, z - cellSize / 2),
+          new THREE.Vector3(x - cellSize / 2, 0, z + cellSize / 2)
+        );
+      }
+    });
+  }
 
 // create wall
 const createWall = (start, end) => {
