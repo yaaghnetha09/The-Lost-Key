@@ -22,4 +22,11 @@ const pointLight = new THREE.PointLight(0xffffff, 1);
 pointLight.position.set(50, 50, 50);
 scene.add(pointLight);
 
+// wall creation
+
+// wall dimension
+wallHeight = 1;
+wallWidth = 0.1;
+cellSize = 1;
+
 renderer.render(scene, camera);
