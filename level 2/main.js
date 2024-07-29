@@ -29,13 +29,34 @@ wallHeight = 1;
 wallWidth = 0.1;
 cellSize = 1;
 
+// create maze walls using mazeData
+mazeData.forEach(cell => {
+    const { i, j, walls } = cell;
+    const x = i * cellSize;
+    const z = j * cellSize;
+
+    if (walls[0]) {
+        createWall();
+    }
+    if (walls[1]) {
+        createWall();
+    }
+    if (walls[2]) {
+        createWall();
+    }
+    if (walls[3]) {
+        createWall();
+    }
+});
+
 // create wall
 const createWall = (start, end) => {
     const geometry = new THREE.BoxGeometry(0.1, wallHeight, start.distanceTo(end));
     const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
     const wall = new THREE.Mesh(geometry, material);
     wall.position.set((start.x + end.x) / 2, wallHeight / 2, (start.z + end.z) / 2);
-    wall.lookAt(end); // Rotate to face the end point
+    //to face the end point
+    wall.lookAt(end);
     scene.add(wall);
 };
 
