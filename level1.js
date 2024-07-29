@@ -27,9 +27,6 @@ const player = new THREE.Mesh(playerGeometry, playerMaterial);
 player.position.set(-mazeWidth / 2 + 1, 0.25, -mazeHeight / 2 + 1);
 scene.add(player);
 
-camera.position.set(player.position.x, player.position.y + 0.5, player.position.z + 1);
-camera.lookAt(player.position);
-
 // Maze walls and end point
 let mazeWalls = [];
 let endPoint;
@@ -50,7 +47,7 @@ floorTexture.repeat.set(mazeWidth, mazeHeight);
 
 // Function to create a wall
 function createWall(x, y, z) {
-    const wallGeometry = new THREE.BoxGeometry(1, 2, 1); // Ensure consistent wall height
+    const wallGeometry = new THREE.BoxGeometry(1, 2, 1);
     const wallMaterial = new THREE.MeshLambertMaterial({ map: wallTexture });
     const wall = new THREE.Mesh(wallGeometry, wallMaterial);
     wall.position.set(x, y, z);
@@ -60,7 +57,6 @@ function createWall(x, y, z) {
 
 // Generate maze
 function generateMaze() {
-    // Remove existing maze objects from the scene
     for (let i = scene.children.length - 1; i >= 0; i--) {
         const child = scene.children[i];
         if (child instanceof THREE.Mesh && child !== player) {
@@ -74,7 +70,6 @@ function generateMaze() {
     const floorMaterial = new THREE.MeshLambertMaterial({ map: floorTexture });
     const floor = new THREE.Mesh(floorGeometry, floorMaterial);
     floor.rotation.x = -Math.PI / 2;
-    floor.position.set(0, 0, 0);
     scene.add(floor);
 
     // Boundary walls
@@ -103,7 +98,6 @@ function generateMaze() {
     endPoint.position.set(mazeWidth / 2 - 1, 0.25, mazeHeight / 2 - 1);
     scene.add(endPoint);
 }
-
 // Initial maze generation
 generateMaze();
 
@@ -111,6 +105,7 @@ generateMaze();
 function animate() {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
+    updateMiniMap();
 }
 
 animate();
@@ -119,9 +114,9 @@ animate();
 let lastKey = '';
 
 function handleKeyDown(event) {
-    const moveDistance = 0.1; // Smaller step size for smoother movement
+    const moveDistance = 0.1;
     let rotationDelta = 0;
-    const rotationSpeed = 0.05; // Speed of rotation
+    const rotationSpeed = 0.05;
 
     lastKey = event.key;
     const prevPosition = player.position.clone();
@@ -167,7 +162,7 @@ function checkCollision() {
         }
     }
 
-    // Check if player reached the end point
+     // Check if player reached the end point
     const endPointBox = new THREE.Box3().setFromObject(endPoint);
     if (playerBox.intersectsBox(endPointBox)) {
         alert('You reached the end!');
@@ -189,10 +184,45 @@ window.addEventListener('resize', () => {
 });
 
 
+function updateMiniMap() {
+    const miniMapCanvas = document.createElement('canvas');
+    const miniMapWidth = 200;
+    const miniMapHeight = 200;
+    miniMapCanvas.width = miniMapWidth;
+    miniMapCanvas.height = miniMapHeight;
+    const miniMapContext = miniMapCanvas.getContext('2d');
 
+    miniMapContext.fillStyle = '#fff';
+    miniMapContext.fillRect(0, 0, miniMapWidth, miniMapHeight);
 
+    miniMapContext.fillStyle = '#000';
+    for (const wall of mazeWalls) {
+        miniMapContext.fillRect(
+            (wall.position.x + mazeWidth / 2) * (miniMapWidth / mazeWidth),
+            (wall.position.z + mazeHeight / 2) * (miniMapHeight / mazeHeight),
+            miniMapWidth / mazeWidth,
+            miniMapHeight / mazeHeight
+        );
+    }
 
+    miniMapContext.fillStyle = '#0f0';
+    miniMapContext.fillRect(
+        (player.position.x + mazeWidth / 2) * (miniMapWidth / mazeWidth),
+        (player.position.z + mazeHeight / 2) * (miniMapHeight / mazeHeight),
+        miniMapWidth / mazeWidth,
+        miniMapHeight / mazeHeight
+    );
 
+    miniMapContext.fillStyle = '#f00';
+    miniMapContext.beginPath();
+    miniMapContext.arc(
+        (endPoint.position.x + mazeWidth / 2) * (miniMapWidth / mazeWidth),
+        (endPoint.position.z + mazeHeight / 2) * (miniMapHeight / mazeHeight),
+        miniMapWidth / (2 * mazeWidth),
+        0,
+        2 * Math.PI
+    );
+    miniMapContext.fill();
 
-
-  
+    document.getElementById('mini-map').src = miniMapCanvas.toDataURL();
+}
