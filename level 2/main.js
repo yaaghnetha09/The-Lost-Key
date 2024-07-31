@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { OrbitControls } from 'jsm/controls/OrbitControls.js';
+import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js';
 
 const w = window.innerWidth;
 const h = window.innerHeight;
@@ -16,6 +16,9 @@ renderer.setSize(w, h);
 document.body.appendChild(renderer.domElement);
 
 
+// Add OrbitControls
+const controls = new OrbitControls(camera, renderer.domElement);
+
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(ambientLight);
 const pointLight = new THREE.PointLight(0xffffff, 1);
@@ -24,27 +27,35 @@ scene.add(pointLight);
 
 // wall creation
 
-// wall dimension
-wallHeight = 1;
-wallWidth = 0.1;
-cellSize = 1;
+// Wall dimensions
+  const wallHeight = 1;
+  const wallWidth = 0.1;
+  const cellSize = 1;
 
-// Fetch the maze data
-fetch('mazeData.json')
-  .then(response => response.json())
+  // Fetch the maze data
+  fetch('./mazeData.json')
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
   .then(mazeData => {
+    console.log('Maze data:', mazeData);
     createMaze(mazeData);
     animate();
   })
-  .catch(error => console.error('Error fetching the maze data:', error));
+  .catch(error => {
+    console.error('Error fetching the maze data:', error);
+  });
 
-// create maze walls using mazeData
-function createMaze(mazeData) {
+  // Create maze walls using mazeData
+  function createMaze(mazeData) {
     mazeData.forEach(cell => {
       const { i, j, walls } = cell;
       const x = i * cellSize;
       const z = j * cellSize;
-  
+
       if (walls[0]) { // Top wall
         createWall(
           new THREE.Vector3(x - cellSize / 2, 0, z - cellSize / 2),
@@ -72,21 +83,18 @@ function createMaze(mazeData) {
     });
   }
 
-// create wall
-const createWall = (start, end) => {
-    const geometry = new THREE.BoxGeometry(distance, wallHeight, wallThickness);
+  function createWall(start, end) {
+    const distance = start.distanceTo(end);
+    const geometry = new THREE.BoxGeometry(distance, wallHeight, wallWidth);
     const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
     const wall = new THREE.Mesh(geometry, material);
     wall.position.set((start.x + end.x) / 2, wallHeight / 2, (start.z + end.z) / 2);
-    //to face the end point
     wall.lookAt(end);
     scene.add(wall);
-};
+  }
 
-function animate() {
+  function animate() {
     requestAnimationFrame(animate);
+    controls.update();
     renderer.render(scene, camera);
-}
-animate();
-
-// renderer.render(scene, camera);
+  }
