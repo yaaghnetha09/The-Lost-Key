@@ -29,7 +29,7 @@ pointLight.position.set(50, 50, 50);
 scene.add(pointLight);
 
 
-//fetching of the maze data from mazeData
+//fetching of the maze data from mazeData.json file
 fetch('./mazeData.json')
 .then(response => {
   if (!response.ok) {
@@ -100,9 +100,6 @@ fetch('./mazeData.json')
       wallHeight / 2,
       (start.z + end.z) / 2
     );
-  
-    // Set rotation to align wall with direction
-    wall.rotation.y = Math.atan2(end.z - start.z, end.x - start.x);
   
     scene.add(wall);
   }
