@@ -1,6 +1,8 @@
 import * as THREE from "three";
 import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js';
 
+
+//scene creation
 const w = window.innerWidth;
 const h = window.innerHeight;
 const scene = new THREE.Scene();
@@ -16,68 +18,71 @@ renderer.setSize(w, h);
 document.body.appendChild(renderer.domElement);
 
 
-// Add OrbitControls
+//adding of OrbitControls
 const controls = new OrbitControls(camera, renderer.domElement);
 
+//lighting
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(ambientLight);
 const pointLight = new THREE.PointLight(0xffffff, 1);
 pointLight.position.set(50, 50, 50);
 scene.add(pointLight);
 
+
+//fetching of the maze data from mazeData
+fetch('./mazeData.json')
+.then(response => {
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return response.json();
+})
+.then(mazeData =>{
+  console.log('Maze data:', mazeData);
+  createMaze(mazeData);
+  animate();
+})
+.catch(error =>{
+  console.error('Error fetching the maze data:', error);
+});
+
+
 // wall creation
-
 // Wall dimensions
-  const wallHeight = 1;
-  const wallWidth = 0.1;
-  const cellSize = 1;
+  const wallHeight = 2;
+  const wallWidth = 0.2;
+  const cellSize = 5;
 
-  // Fetch the maze data
-  fetch('./mazeData.json')
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.json();
-  })
-  .then(mazeData => {
-    console.log('Maze data:', mazeData);
-    createMaze(mazeData);
-    animate();
-  })
-  .catch(error => {
-    console.error('Error fetching the maze data:', error);
-  });
-
-  // Create maze walls using mazeData
-  function createMaze(mazeData) {
+  //maze creation
+  //create maze walls using mazeData
+  function createMaze(mazeData){
     mazeData.forEach(cell => {
       const { i, j, walls } = cell;
       const x = i * cellSize;
       const z = j * cellSize;
 
-      if (walls[0]) { // Top wall
+      if (walls[0]){ //top wall
         createWall(
-          new THREE.Vector3(x - cellSize / 2, 0, z - cellSize / 2),
-          new THREE.Vector3(x + cellSize / 2, 0, z - cellSize / 2)
+          new THREE.Vector3(x-cellSize/2, 0, z-cellSize/2),
+          new THREE.Vector3(x+cellSize/2, 0, z-cellSize/2)
         );
       }
-      if (walls[1]) { // Right wall
+      if (walls[1]) { //right wall
         createWall(
-          new THREE.Vector3(x + cellSize / 2, 0, z - cellSize / 2),
-          new THREE.Vector3(x + cellSize / 2, 0, z + cellSize / 2)
+          new THREE.Vector3(x+cellSize/2, 0, z-cellSize/2),
+          new THREE.Vector3(x+cellSize/2, 0, z+cellSize/2)
         );
       }
-      if (walls[2]) { // Bottom wall
+      if (walls[2]) { //bottom wall
         createWall(
-          new THREE.Vector3(x - cellSize / 2, 0, z + cellSize / 2),
-          new THREE.Vector3(x + cellSize / 2, 0, z + cellSize / 2)
+          new THREE.Vector3(x-cellSize/2, 0, z+cellSize/2),
+          new THREE.Vector3(x+cellSize/2, 0, z+cellSize/2)
         );
       }
-      if (walls[3]) { // Left wall
+      if (walls[3]) { //left wall
         createWall(
-          new THREE.Vector3(x - cellSize / 2, 0, z - cellSize / 2),
-          new THREE.Vector3(x - cellSize / 2, 0, z + cellSize / 2)
+          new THREE.Vector3(x-cellSize/2, 0, z-cellSize/2),
+          new THREE.Vector3(x-cellSize/2, 0, z+cellSize/2)
         );
       }
     });
@@ -88,11 +93,30 @@ scene.add(pointLight);
     const geometry = new THREE.BoxGeometry(distance, wallHeight, wallWidth);
     const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
     const wall = new THREE.Mesh(geometry, material);
-    wall.position.set((start.x + end.x) / 2, wallHeight / 2, (start.z + end.z) / 2);
-    wall.lookAt(end);
+  
+    //Set wall position at the midpoint
+    wall.position.set(
+      (start.x + end.x) / 2,
+      wallHeight / 2,
+      (start.z + end.z) / 2
+    );
+  
+    // Set rotation to align wall with direction
+    wall.rotation.y = Math.atan2(end.z - start.z, end.x - start.x);
+  
     scene.add(wall);
   }
 
+
+
+// createMaze(mazeData);
+
+//camera view
+camera.position.set(10, 10, 10);
+camera.lookAt(0, 0, 0);
+
+
+// rendering
   function animate() {
     requestAnimationFrame(animate);
     controls.update();
