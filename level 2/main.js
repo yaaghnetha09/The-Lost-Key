@@ -149,7 +149,7 @@ fetch('./mazeData.json')
 
  // //window creation
   function createWindow(position, width, height, depth) {
-    const geometry = new THREE.BoxGeometry(length,height,depth);
+    const geometry = new THREE.BoxGeometry(width,height,depth);
     const material = new THREE.MeshBasicMaterial({color: 0x00ff00, transparent: true, opacity: 0.5});
     const window = new THREE.Mesh(geometry, material);
   
