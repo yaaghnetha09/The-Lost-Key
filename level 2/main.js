@@ -133,14 +133,14 @@ fetch('./mazeData.json')
         wall_height / 2,
         (start.z + end.z) / 2
       );
-      createWindow(windowPositoin, 2, 1);
+      createWindow(window_position, 2, 1);
     } else{
       const window_position=new THREE.Vector3(
         (start.x + end.x) / 2,
         wall_height / 2,
         (start.z + end.z) / 2
       );
-      createWindow(windowPositoin, 2, 1);
+      createWindow(window_position, 2, 1);
     }
   }
   
