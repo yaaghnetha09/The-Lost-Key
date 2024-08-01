@@ -173,14 +173,14 @@ function createMarker(position, color) {
 }
 
 //add start and end markers
-function addStartEndMarkers(start, end) {
-  const startX = start.i * cellSize - cellSize / 2;
-  const startZ = start.j * cellSize - cellSize / 2;
-  const endX = end.i * cellSize - cellSize / 2;
-  const endZ = end.j * cellSize - cellSize / 2;
+function add_markers(start, end) {
+  const startX = start.i * cell_size - cell_size / 2;
+  const startZ = start.j * cell_size - cell_size / 2;
+  const endX = end.i * cell_size - cell_size / 2;
+  const endZ = end.j * cell_size - cell_size / 2;
 
-  createMarker(new THREE.Vector3(startX, 1, startZ), 0x00ff00); // Green for start
-  createMarker(new THREE.Vector3(endX, 1, endZ), 0xff0000); // Red for end
+  createMarker(new THREE.Vector3(startX, 1, startZ), 0x00ff00); //green for start
+  createMarker(new THREE.Vector3(endX, 1, endZ), 0xff0000); //red for end
 }
 
 
