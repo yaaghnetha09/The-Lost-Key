@@ -58,7 +58,7 @@ fetch('./mazeData.json')
 
   //start and end point of maze
   const start_point = {i: 0, j: 0};
-  const end_point = {i: 9, j: 9};
+  const end_point = {i: 9, j: 0};
 
 
   //maze creation
@@ -111,7 +111,7 @@ fetch('./mazeData.json')
     wall_height, 
     isHorizontal ? wall_width : length
     )
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const material = new THREE.MeshBasicMaterial({color: 0x00fff0});
     const wall = new THREE.Mesh(geometry, material);
   
     //Set wall position at the midpoint
