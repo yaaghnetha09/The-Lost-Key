@@ -160,6 +160,17 @@ fetch('./mazeData.json')
   }
   
 
+// //start and end point
+function createMarker(position, color) {
+  const geometry = new THREE.SphereGeometry(0.5,32,32);
+  const material = new THREE.MeshBasicMaterial({ color });
+  const marker = new THREE.Mesh(geometry, material);
+
+  marker.position.set(position.x, position.y, position.z);
+
+  scene.add(marker);
+}
+
 
 
 //camera view
