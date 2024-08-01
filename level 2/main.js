@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js';
+// import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js';
 
 
 //scene creation
@@ -11,9 +11,7 @@ const aspect = w / h;
 const near = 0.1;
 const far = 1000;
 const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-// camera.position.z = 5;
-camera.position.set(25, 25, 25);
-camera.lookAt(new THREE.Vector3(0, 0, 0));
+camera.position.z = 5;
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(w, h);
 // renderer.setAnimationLoop( animate );
@@ -21,9 +19,9 @@ document.body.appendChild(renderer.domElement);
 
 
 //adding of OrbitControls
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableZoom = true;
-controls.autoRotate = false;
+// const controls = new OrbitControls(camera, renderer.domElement);
+// controls.enableZoom = true;
+// controls.autoRotate = false;
 
 
 //lighting
@@ -121,13 +119,13 @@ fetch('./mazeData.json')
 
 
 //camera view
-// camera.position.set(25, 25, 25);
-// camera.lookAt(10, 10, 10);
+camera.position.set(65, 65, 65);
+camera.lookAt(new THREE.Vector3(0, 0, 0));
 
 
 // rendering
   function animate() {
     requestAnimationFrame(animate);
-    controls.update();
+    // controls.update();
     renderer.render(scene, camera);
   }
