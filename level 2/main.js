@@ -160,7 +160,8 @@ fetch('./mazeData.json')
   }
   
 
-// //start and end point
+// //start and end point 
+ // mark the end and start points
 function createMarker(position, color) {
   const geometry = new THREE.SphereGeometry(0.5,32,32);
   const material = new THREE.MeshBasicMaterial({ color });
@@ -169,6 +170,17 @@ function createMarker(position, color) {
   marker.position.set(position.x, position.y, position.z);
 
   scene.add(marker);
+}
+
+//add start and end markers
+function addStartEndMarkers(start, end) {
+  const startX = start.i * cellSize - cellSize / 2;
+  const startZ = start.j * cellSize - cellSize / 2;
+  const endX = end.i * cellSize - cellSize / 2;
+  const endZ = end.j * cellSize - cellSize / 2;
+
+  createMarker(new THREE.Vector3(startX, 1, startZ), 0x00ff00); // Green for start
+  createMarker(new THREE.Vector3(endX, 1, endZ), 0xff0000); // Red for end
 }
 
 
