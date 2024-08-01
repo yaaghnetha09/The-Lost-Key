@@ -11,7 +11,9 @@ const aspect = w / h;
 const near = 0.1;
 const far = 1000;
 const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-camera.position.z = 5;
+// camera.position.z = 5;
+camera.position.set(25, 25, 25);
+camera.lookAt(new THREE.Vector3(0, 0, 0));
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(w, h);
 // renderer.setAnimationLoop( animate );
@@ -116,8 +118,8 @@ fetch('./mazeData.json')
 
 
 //camera view
-camera.position.set(10, 10, 10);
-camera.lookAt(25, 25, 25);
+// camera.position.set(25, 25, 25);
+// camera.lookAt(10, 10, 10);
 
 
 // rendering
