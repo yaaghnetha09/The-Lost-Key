@@ -92,7 +92,7 @@ fetch('./mazeData.json')
     });
   }
 
-  function createWall(start, end,) {
+  function createWall(start, end, isHorizontal) {
     const length = start.distanceTo(end);
     const geometry = new THREE.BoxGeometry(
       isHorizontal ? length : wallWidth, 
@@ -114,11 +114,10 @@ fetch('./mazeData.json')
 
 
 
-createMaze(mazeData);
 
 //camera view
 camera.position.set(10, 10, 10);
-camera.lookAt(0, 0, 0);
+camera.lookAt(25, 25, 25);
 
 
 // rendering
