@@ -64,25 +64,29 @@ fetch('./mazeData.json')
       if (walls[0]){ //top wall
         createWall(
           new THREE.Vector3(x-cellSize/2, 0, z-cellSize/2),
-          new THREE.Vector3(x+cellSize/2, 0, z-cellSize/2)
+          new THREE.Vector3(x+cellSize/2, 0, z-cellSize/2),
+          true
         );
       }
       if (walls[1]) { //right wall
         createWall(
           new THREE.Vector3(x+cellSize/2, 0, z-cellSize/2),
-          new THREE.Vector3(x+cellSize/2, 0, z+cellSize/2)
+          new THREE.Vector3(x+cellSize/2, 0, z+cellSize/2),
+          false
         );
       }
       if (walls[2]) { //bottom wall
         createWall(
           new THREE.Vector3(x-cellSize/2, 0, z+cellSize/2),
-          new THREE.Vector3(x+cellSize/2, 0, z+cellSize/2)
+          new THREE.Vector3(x+cellSize/2, 0, z+cellSize/2),
+          true
         );
       }
       if (walls[3]) { //left wall
         createWall(
           new THREE.Vector3(x-cellSize/2, 0, z-cellSize/2),
-          new THREE.Vector3(x-cellSize/2, 0, z+cellSize/2)
+          new THREE.Vector3(x-cellSize/2, 0, z+cellSize/2),
+          false
         );
       }
     });
