@@ -52,43 +52,43 @@ fetch('./mazeData.json')
 
 // wall creation
 // Wall dimensions
-  const wallHeight = 2;
-  const wallWidth = 0.2;
-  const cellSize = 5;
+  const wall_height = 3;
+  const wall_width = 0.2;
+  const cell_size = 5;
 
   //maze creation
   //create maze walls using mazeData
   function createMaze(mazeData){
     mazeData.forEach(cell => {
       const { i, j, walls } = cell;
-      const x = i * cellSize;
-      const z = j * cellSize;
+      const x = i * cell_size;
+      const z = j * cell_size;
 
       if (walls[0]){ //top wall
         createWall(
-          new THREE.Vector3(x-cellSize/2, 0, z-cellSize/2),
-          new THREE.Vector3(x+cellSize/2, 0, z-cellSize/2),
+          new THREE.Vector3(x-cell_size/2, 0, z-cell_size/2),
+          new THREE.Vector3(x+cell_size/2, 0, z-cell_size/2),
           true
         );
       }
       if (walls[1]) { //right wall
         createWall(
-          new THREE.Vector3(x+cellSize/2, 0, z-cellSize/2),
-          new THREE.Vector3(x+cellSize/2, 0, z+cellSize/2),
+          new THREE.Vector3(x+cell_size/2, 0, z-cell_size/2),
+          new THREE.Vector3(x+cell_size/2, 0, z+cell_size/2),
           false
         );
       }
       if (walls[2]) { //bottom wall
         createWall(
-          new THREE.Vector3(x-cellSize/2, 0, z+cellSize/2),
-          new THREE.Vector3(x+cellSize/2, 0, z+cellSize/2),
+          new THREE.Vector3(x-cell_size/2, 0, z+cell_size/2),
+          new THREE.Vector3(x+cell_size/2, 0, z+cell_size/2),
           true
         );
       }
       if (walls[3]) { //left wall
         createWall(
-          new THREE.Vector3(x-cellSize/2, 0, z-cellSize/2),
-          new THREE.Vector3(x-cellSize/2, 0, z+cellSize/2),
+          new THREE.Vector3(x-cell_size/2, 0, z-cell_size/2),
+          new THREE.Vector3(x-cell_size/2, 0, z+cell_size/2),
           false
         );
       }
@@ -98,9 +98,9 @@ fetch('./mazeData.json')
   function createWall(start, end, isHorizontal) {
     const length = start.distanceTo(end);
     const geometry = new THREE.BoxGeometry(
-      isHorizontal ? length : wallWidth, 
-    wallHeight, 
-    isHorizontal ? wallWidth : length
+      isHorizontal ? length : wall_width, 
+    wall_height, 
+    isHorizontal ? wall_width : length
     )
     const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
     const wall = new THREE.Mesh(geometry, material);
@@ -108,7 +108,7 @@ fetch('./mazeData.json')
     //Set wall position at the midpoint
     wall.position.set(
       (start.x + end.x) / 2,
-      wallHeight / 2,
+      wall_height / 2,
       (start.z + end.z) / 2
     );
   
