@@ -22,6 +22,9 @@ document.body.appendChild(renderer.domElement);
 
 //adding of OrbitControls
 const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableZoom = true;
+controls.autoRotate = false;
+
 
 //lighting
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
