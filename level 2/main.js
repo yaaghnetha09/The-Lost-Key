@@ -113,19 +113,6 @@ fetch('./mazeData.json')
     );
   
     scene.add(wall);
-  }
-
-  function createWindow(position, width, height) {
-    const length = width;//length = width
-    const depth = 0.1;//to make the window thin to look realistic 
-    const geometry = new THREE.BoxGeometry(length,height,depth);
-    const material = new THREE.MeshBasicMaterial({color: 0x00ff00, transparent: true, opacity: 0.5});
-    const window = new THREE.Mesh(geometry, material);
-  
-    //window position
-    window.position.set(position.x, position.y, position.z);
-  
-    scene.add(window);
 
     if (isHorizontal){
       const window_position = new THREE.Vector3(
@@ -142,6 +129,19 @@ fetch('./mazeData.json')
       );
       createWindow(window_position, 2, 1);
     }
+  }
+
+  function createWindow(position, width, height) {
+    const length = width;//length = width
+    const depth = 0.1;//to make the window thin to look realistic 
+    const geometry = new THREE.BoxGeometry(length,height,depth);
+    const material = new THREE.MeshBasicMaterial({color: 0x00ff00, transparent: true, opacity: 0.5});
+    const window = new THREE.Mesh(geometry, material);
+  
+    //window position
+    window.position.set(position.x, position.y, position.z);
+  
+    scene.add(window);
   }
   
 
