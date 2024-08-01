@@ -18,7 +18,7 @@ renderer.setSize(w, h);
 document.body.appendChild(renderer.domElement);
 
 
-//adding of OrbitControls
+// //adding of OrbitControls
 // const controls = new OrbitControls(camera, renderer.domElement);
 // controls.enableZoom = true;
 // controls.autoRotate = false;
@@ -119,7 +119,7 @@ fetch('./mazeData.json')
 
 
 //camera view
-camera.position.set(65, 65, 65);
+camera.position.set(0, 65, 65);
 camera.lookAt(new THREE.Vector3(0, 0, 0));
 
 
