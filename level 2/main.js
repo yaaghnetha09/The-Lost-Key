@@ -56,6 +56,10 @@ fetch('./mazeData.json')
   const wall_width = 0.2;
   const cell_size = 5;
 
+  //start and end point of maze
+  const start_point = {i: 0, j: 0};
+  const end_point = {i: 9, j: 9};
+
 
   //maze creation
   //create maze walls using mazeData
