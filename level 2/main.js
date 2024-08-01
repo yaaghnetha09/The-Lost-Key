@@ -126,6 +126,22 @@ fetch('./mazeData.json')
     window.position.set(position.x, position.y, position.z);
   
     scene.add(window);
+
+    if (isHorizontal){
+      const window_position = new THREE.Vector3(
+        (start.x + end.x) / 2,
+        wall_height / 2,
+        (start.z + end.z) / 2
+      );
+      createWindow(windowPositoin, 2, 1);
+    } else{
+      const window_position=new THREE.Vector3(
+        (start.x + end.x) / 2,
+        wall_height / 2,
+        (start.z + end.z) / 2
+      );
+      createWindow(windowPositoin, 2, 1);
+    }
   }
   
 
