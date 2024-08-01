@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js';
+// import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js';
 
 
 //scene creation
@@ -19,7 +19,7 @@ document.body.appendChild(renderer.domElement);
 
 
 // //adding of OrbitControls
-const controls = new OrbitControls(camera, renderer.domElement);
+// const controls = new OrbitControls(camera, renderer.domElement);
 // controls.enableZoom = true;
 // controls.autoRotate = false;
 
@@ -123,11 +123,26 @@ fetch('./mazeData.json')
 
 
  // adding windows to wall function
-  function add_windows(wall, isHorzontal) {
+  function add_windows(wall, isHorizontal) {
     const width = 2;
     const height = 1;
     const depth = 0.1;
-    const num_windows = Math.floor(wall.geometry.parameters.width/(width * 2));
+    const num_windows = Math.floor(wall.geometry.parameters.width/(width*2));
+    for (let i=0; i<num_windows; i++){
+      const position = isHorizontal
+        ? new THREE.Vector3(
+          wall.position.x - wall.geometry.parameters.width / 2 + (i * 2 + 1) * width,
+          wall.position.y,
+          wall.position.z
+          )
+        : new THREE.Vector3(
+            wall.position.x,
+            wall.position.y,
+            wall.position.z - wall.geometry.parameters.depth / 2 + (i * 2 + 1) * width
+          );
+  
+      createWindow(position, width, height, depth);
+    }
   }
 
 
@@ -157,6 +172,6 @@ camera.lookAt(new THREE.Vector3(0, 0, 0));
 // rendering
   function animate() {
     requestAnimationFrame(animate);
-    controls.update();
+    // controls.update();
     renderer.render(scene, camera);
   }
