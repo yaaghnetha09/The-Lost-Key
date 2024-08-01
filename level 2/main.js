@@ -94,6 +94,8 @@ fetch('./mazeData.json')
         );
       }
     });
+
+    add_markers(start_point, end_point);
   }
 
 
