@@ -92,9 +92,13 @@ fetch('./mazeData.json')
     });
   }
 
-  function createWall(start, end) {
-    const distance = start.distanceTo(end);
-    const geometry = new THREE.BoxGeometry(distance, wallHeight, wallWidth);
+  function createWall(start, end,) {
+    const length = start.distanceTo(end);
+    const geometry = new THREE.BoxGeometry(
+      isHorizontal ? length : wallWidth, 
+    wallHeight, 
+    isHorizontal ? wallWidth : length
+    )
     const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
     const wall = new THREE.Mesh(geometry, material);
   
@@ -110,7 +114,7 @@ fetch('./mazeData.json')
 
 
 
-// createMaze(mazeData);
+createMaze(mazeData);
 
 //camera view
 camera.position.set(10, 10, 10);
