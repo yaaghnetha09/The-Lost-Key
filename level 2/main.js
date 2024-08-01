@@ -1,5 +1,5 @@
 import * as THREE from "three";
-// import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js';
+import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js';
 
 
 //scene creation
@@ -19,7 +19,7 @@ document.body.appendChild(renderer.domElement);
 
 
 // //adding of OrbitControls
-// const controls = new OrbitControls(camera, renderer.domElement);
+const controls = new OrbitControls(camera, renderer.domElement);
 // controls.enableZoom = true;
 // controls.autoRotate = false;
 
@@ -55,6 +55,7 @@ fetch('./mazeData.json')
   const wall_height = 3;
   const wall_width = 0.2;
   const cell_size = 5;
+
 
   //maze creation
   //create maze walls using mazeData
@@ -95,6 +96,8 @@ fetch('./mazeData.json')
     });
   }
 
+
+
   function createWall(start, end, isHorizontal) {
     const length = start.distanceTo(end);
     const geometry = new THREE.BoxGeometry(
@@ -114,23 +117,22 @@ fetch('./mazeData.json')
   
     scene.add(wall);
 
-    if (isHorizontal){
-      const window_position = new THREE.Vector3(
-        (start.x + end.x) / 2,
-        wall_height / 2,
-        (start.z + end.z) / 2
-      );
-      createWindow(window_position, 2, 1);
-    } else{
-      const window_position=new THREE.Vector3(
-        (start.x + end.x) / 2,
-        wall_height / 2,
-        (start.z + end.z) / 2
-      );
-      createWindow(window_position, 2, 1);
-    }
+    add_windows(wall, isHorizontal);
   }
 
+
+
+ // adding windows to wall function
+  function add_windows(wall, isHorzontal) {
+    const width = 2;
+    const height = 1;
+    const depth = 0.1;
+    const num_windows = Math.floor(wall.geometry.parameters.width/(width * 2));
+  }
+
+
+
+ // //window creation
   function createWindow(position, width, height) {
     const length = width;//length = width
     const depth = 0.1;//to make the window thin to look realistic 
@@ -155,6 +157,6 @@ camera.lookAt(new THREE.Vector3(0, 0, 0));
 // rendering
   function animate() {
     requestAnimationFrame(animate);
-    // controls.update();
+    controls.update();
     renderer.render(scene, camera);
   }
