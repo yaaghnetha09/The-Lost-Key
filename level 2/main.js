@@ -42,7 +42,8 @@ fetch('./mazeData.json')
 })
 .then(mazeData =>{
   console.log('Maze data:', mazeData);
-  createMaze(mazeData);
+  create_floor(mazeData[0].length, mazeData.length, cell_size); //adding the floor;
+  createMaze(mazeData);//adding the walls;
   animate();
 })
 .catch(error =>{
