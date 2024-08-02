@@ -98,7 +98,9 @@ fetch('./mazeData.json')
         );
       }
     });
+ 
 
+    //added marker to start and end point
     add_markers(start_point, end_point);
   }
 
