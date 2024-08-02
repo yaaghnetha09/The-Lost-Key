@@ -136,6 +136,9 @@ function create_floor(maze_width, maze_height, cell_size) {
 
   floor.rotation.x = Math.PI / 2; //to make the floor lie on xz plane;
 
+  floor.position.set((maze_width * cell_size)/2 - cell_size/2, 0, (maze_height*cell_size)/2 - cell_size/2);
+
+  scene.add(floor);
 }
 
 // //start and end point 
