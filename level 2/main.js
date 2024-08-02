@@ -53,7 +53,10 @@ fetch('./mazeData.json')
 })
 .then(mazeData =>{
   console.log('Maze data:', mazeData);
-  create_floor(mazeData[0].length, mazeData.length, cell_size); //adding the floor;
+  //to avoid NaN error, used maximum i and j and calculated maze width and height
+  const maze_width = mazeData.reduce((max, cell) => Math.max(max, cell.i), 0) + 1;
+  const maze_height = mazeData.reduce((max, cell) => Math.max(max, cell.j), 0) + 1;
+  create_floor(maze_width, maze_height, cell_size); //adding the floor;
   createMaze(mazeData);//adding the walls;
   animate();
 })
