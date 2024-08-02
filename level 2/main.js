@@ -163,7 +163,7 @@ function create_floor(maze_width, maze_height, cell_size) {
 // //start and end point 
  // mark the end and start points
   function createMarker(position, color) {
-    const geometry = new THREE.SphereGeometry(0.5,32,32);
+    const geometry = new THREE.SphereGeometry(1.5,50,50);
     const material = new THREE.MeshBasicMaterial({ color });
     const marker = new THREE.Mesh(geometry, material);
 
