@@ -123,47 +123,8 @@ fetch('./mazeData.json')
   
     scene.add(wall);
 
-    add_windows(wall, isHorizontal);
   }
 
-
-
- // adding windows to wall function
-  function add_windows(wall, isHorizontal) {
-    const width = 2;
-    const height = 1;
-    const depth = 0.1;
-    const num_windows = Math.floor(wall.geometry.parameters.width/(width*2));
-    for (let i=0; i<num_windows; i++){
-      const position = isHorizontal
-        ? new THREE.Vector3(
-          wall.position.x - wall.geometry.parameters.width / 2 + (i * 2 + 1) * width,
-          wall.position.y,
-          wall.position.z
-          )
-        : new THREE.Vector3(
-            wall.position.x,
-            wall.position.y,
-            wall.position.z - wall.geometry.parameters.depth / 2 + (i * 2 + 1) * width
-          );
-  
-      createWindow(position, width, height, depth);
-    }
-  }
-
-
-
- // //window creation
-  function createWindow(position, width, height, depth) {
-    const geometry = new THREE.BoxGeometry(width,height,depth);
-    const material = new THREE.MeshBasicMaterial({color: 0x00ff00, transparent: true, opacity: 0.5});
-    const window = new THREE.Mesh(geometry, material);
-  
-    //window position
-    window.position.set(position.x, position.y, position.z);
-  
-    scene.add(window);
-  }
   
 
 // //start and end point 
