@@ -122,11 +122,11 @@ fetch('./mazeData.json')
     const wall = new THREE.Mesh(geometry, material);
   
     //Set wall position at the midpoint
-    wall.position.set(
-      (start.x + end.x) / 2,
-      wall_height / 2,
-      (start.z + end.z) / 2
-    );
+    const x = (start.x + end.x) / 2;
+    // 0.1 to position wall height slightly above the floor.
+    const y = wall_height / 2;
+    const z = (start.z + end.z) / 2;
+    wall.position.set(x, y,z);
   
     scene.add(wall);
 
@@ -143,12 +143,16 @@ function create_floor(maze_width, maze_height, cell_size) {
   }
 
   const floorGeometry = new THREE.PlaneGeometry(maze_width*cell_size, maze_height*cell_size);
-  const floorMaterial = new THREE.MeshBasicMaterial({color: 0x00fff0, side: THREE.DoubleSide});
+  const floorMaterial = new THREE.MeshBasicMaterial({color: 0x000ff0, side: THREE.DoubleSide});
   const floor = new THREE.Mesh(floorGeometry, floorMaterial);
 
   floor.rotation.x = Math.PI / 2; //to make the floor lie on xz plane;
 
-  floor.position.set((maze_width * cell_size)/2 - cell_size/2, 0, (maze_height*cell_size)/2 - cell_size/2);
+
+  const x = (maze_width * cell_size)/2 - cell_size/2;
+  const y = 0;
+  const z = (maze_height*cell_size)/2 - cell_size/2;
+  floor.position.set(x, y, z);
 
   scene.add(floor);
   console.log('Floor created with dimensions:', maze_width * cell_size, maze_height * cell_size);
