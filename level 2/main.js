@@ -32,6 +32,17 @@ pointLight.position.set(50, 50, 50);
 scene.add(pointLight);
 
 
+
+// Wall dimensions
+const wall_height = 3;
+const wall_width = 0.2;
+const cell_size = 5;
+
+//start and end point of maze
+const start_point = {i: 0, j: 0};
+const end_point = {i: 9, j: 0};
+
+
 //fetching of the maze data from mazeData.json file
 fetch('./mazeData.json')
 .then(response => {
@@ -51,17 +62,7 @@ fetch('./mazeData.json')
 });
 
 
-// wall creation
-// Wall dimensions
-  const wall_height = 3;
-  const wall_width = 0.2;
-  const cell_size = 5;
-
-  //start and end point of maze
-  const start_point = {i: 0, j: 0};
-  const end_point = {i: 9, j: 0};
-
-
+//// wall creation
   //maze creation
   //create maze walls using mazeData
   function createMaze(mazeData){
@@ -140,6 +141,7 @@ function create_floor(maze_width, maze_height, cell_size) {
   floor.position.set((maze_width * cell_size)/2 - cell_size/2, 0, (maze_height*cell_size)/2 - cell_size/2);
 
   scene.add(floor);
+  console.log('Floor created with dimensions:', maze_width * cell_size, maze_height * cell_size);
 }
 
 // //start and end point 
