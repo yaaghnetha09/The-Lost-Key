@@ -135,6 +135,13 @@ fetch('./mazeData.json')
   
 
 function create_floor(maze_width, maze_height, cell_size) {
+
+  console.log('creating floor with dimensions:', maze_width, maze_height, cell_size);
+  if (isNaN(maze_width) || isNaN(maze_height) || isNaN(cell_size)) {
+    console.error('Invalid dimensions for floor:', {maze_width,maze_height,cell_size});
+    return;
+  }
+
   const floorGeometry = new THREE.PlaneGeometry(maze_width*cell_size, maze_height*cell_size);
   const floorMaterial = new THREE.MeshBasicMaterial({color: 0x00fff0, side: THREE.DoubleSide});
   const floor = new THREE.Mesh(floorGeometry, floorMaterial);
@@ -147,16 +154,18 @@ function create_floor(maze_width, maze_height, cell_size) {
   console.log('Floor created with dimensions:', maze_width * cell_size, maze_height * cell_size);
 }
 
+
+
 // //start and end point 
  // mark the end and start points
-function createMarker(position, color) {
-  const geometry = new THREE.SphereGeometry(0.5,32,32);
-  const material = new THREE.MeshBasicMaterial({ color });
-  const marker = new THREE.Mesh(geometry, material);
+  function createMarker(position, color) {
+    const geometry = new THREE.SphereGeometry(0.5,32,32);
+    const material = new THREE.MeshBasicMaterial({ color });
+    const marker = new THREE.Mesh(geometry, material);
 
-  marker.position.set(position.x, position.y, position.z);
+    marker.position.set(position.x, position.y, position.z);
 
-  scene.add(marker);
+    scene.add(marker);
 }
 
 //add start and end markers
