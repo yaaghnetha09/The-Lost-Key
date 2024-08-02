@@ -124,9 +124,9 @@ fetch('./mazeData.json')
     //Set wall position at the midpoint
     const x = (start.x + end.x) / 2;
     // 0.1 to position wall height slightly above the floor.
-    const y = wall_height / 2;
+    const y = wall_height / 2 + 0.1;
     const z = (start.z + end.z) / 2;
-    wall.position.set(x, y,z);
+    wall.position.set(x,y,z);
   
     scene.add(wall);
 
@@ -148,7 +148,7 @@ function create_floor(maze_width, maze_height, cell_size) {
 
   floor.rotation.x = Math.PI / 2; //to make the floor lie on xz plane;
 
-
+  // positioning of floor
   const x = (maze_width * cell_size)/2 - cell_size/2;
   const y = 0;
   const z = (maze_height*cell_size)/2 - cell_size/2;
