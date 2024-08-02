@@ -129,6 +129,12 @@ fetch('./mazeData.json')
 
   
 
+function create_floor() {
+  const floorGeometry = new THREE.PlaneGeometry(maze.length, maze[0].length);
+  const floorMaterial = new THREE.MeshBasicMaterial({color: 0x00fff0, side: THREE.DoubleSide});
+  const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+}
+
 // //start and end point 
  // mark the end and start points
 function createMarker(position, color) {
