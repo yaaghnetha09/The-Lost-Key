@@ -14,3 +14,15 @@ class Player{
         scene.add(this.mesh);
     }
 }
+
+class BasicCharacterController{
+    constructor() {
+
+    }
+}
+
+class BasicCharacterControllerInput{
+    constructor(){
+        
+    }
+}
