@@ -23,6 +23,12 @@ class BasicCharacterController{
 
 class BasicCharacterControllerInput{
     constructor(){
+
+    }
+}
+
+class FiniteStateMachine{
+    constructor() {
         
     }
 }
