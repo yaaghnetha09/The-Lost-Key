@@ -17,7 +17,10 @@ class Player{
 
 class BasicCharacterController{
     constructor() {
+        this._input = new BasicCharacterControllerInput();
+        this._stateMachine = new FiniteStateMachine();
 
+        this.Player();
     }
 }
 
@@ -29,6 +32,6 @@ class BasicCharacterControllerInput{
 
 class FiniteStateMachine{
     constructor() {
-        
+
     }
 }
