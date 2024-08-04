@@ -1,6 +1,6 @@
 import * as THREE from "three";
 // import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js';
-import { BasicCharacterController } from "./player";
+import { BasicCharacterController } from "./player.js";
 
 //scene creation
 const w = window.innerWidth;
