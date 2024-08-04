@@ -80,7 +80,8 @@ class BasicCharacterControllerInput{
 
 class FiniteStateMachine{
     constructor() {
-
+        this._states = {};
+        this._currentState = null;
     }
 
     _AddState(name, type) {
@@ -101,7 +102,7 @@ class FiniteStateMachine{
     
         this._currentState = state;
         state.Enter(prevState);
-      }
+    }
     
     
 }
