@@ -41,6 +41,8 @@ export function createScene() {
     scene.clear();
     allBuildingMeshes = [];
 
+    addRoads();
+
     // Add grass ground
     const groundGeometry = new THREE.PlaneGeometry(city.size, city.size);
     const groundMaterial = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
@@ -65,11 +67,31 @@ export function createScene() {
       }
     }
 
-
     player = createPlayerOnBuilding();
     endPoint = createEndPointOnBuilding();
 
     setupLights();
+  }
+  function addRoads() {
+    const roadWidth = 2;
+    const roadMaterial = new THREE.MeshLambertMaterial({ color: 0x888888 });
+
+    for (let x = 0; x < city.size; x++) {
+      for (let y = 0; y < city.size; y++) {
+        if ((x % 2 === 0 || y % 2 === 0) && !(city.data[x][y].building)) {
+          const roadGeometry = new THREE.BoxGeometry(roadWidth, 0.1, roadWidth);
+          const roadMesh = new THREE.Mesh(roadGeometry, roadMaterial);
+          roadMesh.position.set(x, 0, y);
+          scene.add(roadMesh);
+
+          const lineMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+          const lineGeometry = new THREE.BoxGeometry(0.1, 0.01, roadWidth);
+          const lineMesh = new THREE.Mesh(lineGeometry, lineMaterial);
+          lineMesh.position.set(x, 0.05, y);
+          scene.add(lineMesh);
+        }
+      }
+    }
   }
   
   function createPlayerOnBuilding() {
@@ -212,7 +234,6 @@ export function createScene() {
           jumpVelocity = 0;
         }
       } else {
-        // Apply gravity
         jumpVelocity -= gravity * delta;
         player.position.y += jumpVelocity * delta;
 
