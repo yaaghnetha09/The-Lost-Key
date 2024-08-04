@@ -26,7 +26,11 @@ class BasicCharacterController{
 
 class BasicCharacterControllerInput{
     constructor(){
+        this._Init();
+    }
 
+    _Init() {
+        
     }
 }
 
