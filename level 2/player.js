@@ -39,6 +39,23 @@ class BasicCharacterControllerInput{
         document.addEventListener('keydown', (e) => this._onKeyDown(e), false);
         document.addEventListener('keyup', (e) => this._onKeyUp(e), false);
     }
+
+    _onKeyDown(event) {
+        switch (event.keyCode) {
+          case 87: // w
+            this._keys.forward = true;
+            break;
+          case 65: // a
+            this._keys.left = true;
+            break;
+          case 83: // s
+            this._keys.backward = true;
+            break;
+          case 68: // d
+            this._keys.right = true;
+            break;
+        }
+    }
 }
 
 class FiniteStateMachine{
