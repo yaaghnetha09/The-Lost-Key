@@ -89,20 +89,26 @@ class FiniteStateMachine{
     }
 
     SetState(name) {
-        const prevState = this._currentState;
+        const prevState = this._currentState;//setting the current state
         
         if (prevState) {
           if (prevState.Name == name) {
             return;
           }
-          prevState.Exit();
+          prevState.Exit();//signals the old state which is exiting
         }
     
         const state = new this._states[name](this);
     
-        this._currentState = state;
+        this._currentState = state; // notifies the new state that is active;
         state.Enter(prevState);
     }
-    
+
+    Update(timeElapsed, input) { //gets called on every frame and passes the frame time and input
+        //to the currently active state
+        if (this._currentState) {
+          this._currentState.Update(timeElapsed, input);
+        }
+      }
     
 }
