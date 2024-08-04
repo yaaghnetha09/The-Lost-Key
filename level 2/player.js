@@ -30,7 +30,14 @@ class BasicCharacterControllerInput{
     }
 
     _Init() {
-        
+        this._keys = {
+            forward: false,
+            backward: false,
+            left: false,
+            right: false,
+        };
+        document.addEventListener('keydown', (e) => this._onKeyDown(e), false);
+        document.addEventListener('keyup', (e) => this._onKeyUp(e), false);
     }
 }
 
