@@ -173,6 +173,7 @@ function create_floor(maze_width, maze_height, cell_size) {
     scene.add(marker);
 }
 
+
 //add start and end markers
 function add_markers(start, end) {
   const startX = start.i * cell_size - cell_size / 2;
@@ -195,5 +196,11 @@ camera.lookAt(new THREE.Vector3(0, 0, 0));
   function animate() {
     requestAnimationFrame(animate);
     // controls.update();
+    const delta = clock.getDelta();
+    player.Update(delta);
     renderer.render(scene, camera);
   }
+
+  // Clock for time-based animation
+const clock = new THREE.Clock();
+animate();
