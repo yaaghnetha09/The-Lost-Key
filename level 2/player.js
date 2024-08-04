@@ -1,4 +1,6 @@
 import * as THREE from "three";
+//NOTE : THIS CODE IS TAKEN AND INSPIRED FROM https://github.com/simondevyoutube/ThreeJS_Tutorial_CharacterController/blob/main/main.js
+// THIS IS IMPROVISED FOR OUR OWN USAGE
 
 
 class BasicCharacterControllerProxy {
