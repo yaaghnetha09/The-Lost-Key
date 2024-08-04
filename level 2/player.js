@@ -24,6 +24,8 @@ class BasicCharacterController{
     }
 }
 
+
+
 class BasicCharacterControllerInput{
     constructor(){
         this._Init();
@@ -74,7 +76,7 @@ class BasicCharacterControllerInput{
         
         }
     }
-}
+};
 
 class FiniteStateMachine{
     constructor() {
