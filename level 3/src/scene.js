@@ -7,12 +7,18 @@ export function createScene() {
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x777777);
 
-  const cameraController = createCamera(gameWindow);
-  const camera = cameraController.camera;
+  const camera = createCamera(gameWindow);
 
   const renderer = new THREE.WebGLRenderer();
   renderer.setSize(gameWindow.offsetWidth, gameWindow.offsetHeight);
   gameWindow.appendChild(renderer.domElement);
+
+  window.addEventListener('resize', () => {
+    const aspect = window.innerWidth / window.innerHeight;
+    camera.aspect = aspect;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
 
   let player = null;
   let endPoint = null;
@@ -58,12 +64,13 @@ export function createScene() {
       }
     }
 
+
     player = createPlayerOnBuilding();
     endPoint = createEndPointOnBuilding();
 
     setupLights();
   }
-
+  
   function createPlayerOnBuilding() {
     const playerGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
     const playerMaterial = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
@@ -225,15 +232,11 @@ export function createScene() {
 
   function updateCamera() {
     if (player) {
-      // Adjust camera offset to follow behind and above the player
-      const cameraOffset = new THREE.Vector3(0, 5, -10); // Behind and above the player
-      const cameraPosition = new THREE.Vector3();
-      cameraPosition.copy(player.position).add(cameraOffset);
-
-      // Smooth camera movement
-      camera.position.lerp(cameraPosition, 0.1);
-
-      // Keep the camera looking at the player
+      camera.position.set(
+        player.position.x - Math.sin(player.rotation.y) * 0.9,
+        player.position.y + 0.45,
+        player.position.z - Math.cos(player.rotation.y) * 0.9
+      );
       camera.lookAt(player.position);
     }
   }
