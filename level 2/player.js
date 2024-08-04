@@ -109,6 +109,21 @@ class FiniteStateMachine{
         if (this._currentState) {
           this._currentState.Update(timeElapsed, input);
         }
-      }
+    }
     
-}
+};
+
+// child of fsm, so to add a character specific states like idle, walk, run
+class CharacterFSM extends FiniteStateMachine {
+    constructor(proxy) {
+      super();
+      this._proxy = proxy;
+      this._Init();
+    }
+  
+    _Init() {
+      this._AddState('idle', IdleState);
+      this._AddState('walk', WalkState);
+      this._AddState('run', RunState);
+    }
+  };
