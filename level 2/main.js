@@ -1,6 +1,6 @@
 import * as THREE from "three";
 // import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js';
-
+import { BasicCharacterController } from "./player";
 
 //scene creation
 const w = window.innerWidth;
@@ -31,7 +31,8 @@ const pointLight = new THREE.PointLight(0xffffff, 1);
 pointLight.position.set(50, 50, 50);
 scene.add(pointLight);
 
-
+//create the player
+const player = new BasicCharacterController({ scene });
 
 // Wall dimensions
 const wall_height = 3;

@@ -73,10 +73,7 @@ class BasicCharacterController{
         if (this._input._keys.shift) {
           acc.multiplyScalar(2.0);
         }
-    
-        if (this._stateMachine._currentState.Name == 'dance') {
-          acc.multiplyScalar(0.0);
-        }
+  
     
         if (this._input._keys.forward) {
           velocity.z += acc.z * timeInSeconds;
