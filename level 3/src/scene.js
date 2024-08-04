@@ -33,6 +33,7 @@ export function createScene() {
   let isGrounded = false;
 
   let moveDirection = { x: 0, z: 0 };
+  let playerRotationY = 0;
   let rotationSpeed = 0.05;
 
   function initialize(cityData) {
@@ -159,8 +160,11 @@ export function createScene() {
   function movePlayer(delta) {
     if (player) {
       const moveSpeed = playerSpeed * delta;
-      player.position.x += moveDirection.x * moveSpeed;
-      player.position.z += moveDirection.z * moveSpeed;
+      player.position.x += Math.sin(player.rotation.y) * moveDirection.z * moveSpeed;
+      player.position.z += Math.cos(player.rotation.y) * moveDirection.z * moveSpeed;
+      player.position.x += Math.cos(player.rotation.y) * moveDirection.x * moveSpeed;
+      player.position.z -= Math.sin(player.rotation.y) * moveDirection.x * moveSpeed;
+
 
       // Handle collision detection with buildings
       const playerBoundingBox = new THREE.Box3().setFromObject(player);
@@ -265,9 +269,18 @@ export function createScene() {
       case 'ArrowRight':
         moveDirection.x = 1;
         break;
+      case 'a':
+        playerRotationY += rotationSpeed;
+        break;
+      case 'd':
+        playerRotationY -= rotationSpeed;
+        break;
       case ' ':
         jumpPlayer();
         break;
+    }
+    if (player) {
+      player.rotation.y = playerRotationY;
     }
   });
 
