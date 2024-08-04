@@ -56,6 +56,24 @@ class BasicCharacterControllerInput{
             break;
         }
     }
+
+    _onKeyUp(event) {
+        switch(event.keyCode) {
+          case 87: // w
+            this._keys.forward = false;
+            break;
+          case 65: // a
+            this._keys.left = false;
+            break;
+          case 83: // s
+            this._keys.backward = false;
+            break;
+          case 68: // d
+            this._keys.right = false;
+            break;
+        
+        }
+    }
 }
 
 class FiniteStateMachine{
