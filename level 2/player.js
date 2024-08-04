@@ -82,4 +82,9 @@ class FiniteStateMachine{
     constructor() {
 
     }
+
+    _AddState(name, type) {
+        this._states[name] = type;
+      }
+    
 }
