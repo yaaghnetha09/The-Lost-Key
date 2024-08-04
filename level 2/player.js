@@ -31,12 +31,13 @@ class BasicCharacterController{
             new BasicCharacterControllerProxy(this._animations));
     
         this.Player();
+        this._target = this.mesh; //Initialize _target
       }
     
       //player creation
       Player(){
-            this.geometry = new THREE.SphereGeometry(0.3, 32, 32);
-            this.material = new THREE.MeshBasicMaterial({ color: 0x0000ff });
+            this.geometry = new THREE.SphereGeometry(2.3, 32, 32);
+            this.material = new THREE.MeshBasicMaterial({ color: 0xFFC0CB });
             this.mesh = new THREE.Mesh(this.geometry, this.material);
     
             // position, initial
