@@ -311,6 +311,21 @@ class WalkState extends State {
     }
 }
 
+
+function checkCollision() {
+  // Intersection test or touching test
+  if(Player.intersectsBox(wall)) { // bounding box vs bounding box
+    animation1();
+  } else {
+    Player.material.opacity = .0;
+  }
+
+  //contains test
+  if(Player.containsBox(wall)) {
+    Player.scale.y = 3;
+  }
+}
+
 export { BasicCharacterController };
   
   
