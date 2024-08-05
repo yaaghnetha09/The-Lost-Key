@@ -56,13 +56,28 @@ export function createScene() {
         const tile = city.data[x][y];
         if (tile.building) {
           const height = Number(tile.building.slice(-1));
+          const randomColor = Math.random() * 0x7fffff + 0x808080;
+
+    
           const buildingGeometry = new THREE.BoxGeometry(1, height, 1);
-          const buildingMaterial = new THREE.MeshLambertMaterial({ color: 0x777777 });
+          const buildingMaterial = new THREE.MeshLambertMaterial({ color: randomColor });
           const buildingMesh = new THREE.Mesh(buildingGeometry, buildingMaterial);
           buildingMesh.position.set(x, height / 2, y);
           buildingMesh.userData = { height };
           scene.add(buildingMesh);
           allBuildingMeshes.push(buildingMesh); 
+
+        const windowGeometry = new THREE.BoxGeometry(0.2, 0.4, 0.01);
+        const windowMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 }); // Black windows
+
+      // Add windows to the building
+      for (let i = 0.4; i < height; i += 0.6) {
+        for (let j = -0.35; j <= 0.35; j += 0.7) {
+          const windowMesh = new THREE.Mesh(windowGeometry, windowMaterial);
+          windowMesh.position.set(x + j, i, y + 0.505); // Slight offset to place on building facade
+          scene.add(windowMesh);
+        }
+      }
       }
     }
   }
@@ -321,4 +336,3 @@ export function createScene() {
 
   return { scene, stop, initialize };
 }
-
