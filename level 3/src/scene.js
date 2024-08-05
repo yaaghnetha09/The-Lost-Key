@@ -25,9 +25,9 @@ export function createScene() {
   let city = null;
   let allBuildingMeshes = [];
 
-  const playerSpeed = 5; // Adjust speed
-  const jumpSpeed = 10; // Adjust jump speed
-  const gravity = 9.8; // Gravity constant
+  const playerSpeed = 5; 
+  const jumpSpeed = 10; 
+  const gravity = 9.8; 
   let isJumping = false;
   let jumpVelocity = 0;
   let isGrounded = false;
@@ -62,16 +62,17 @@ export function createScene() {
           buildingMesh.position.set(x, height / 2, y);
           buildingMesh.userData = { height };
           scene.add(buildingMesh);
-          allBuildingMeshes.push(buildingMesh); // Keep track of all buildings
-        }
+          allBuildingMeshes.push(buildingMesh); 
       }
     }
+  }
 
     player = createPlayerOnBuilding();
     endPoint = createEndPointOnBuilding();
 
     setupLights();
   }
+
   function addRoads() {
     const roadWidth = 2;
     const roadMaterial = new THREE.MeshLambertMaterial({ color: 0x888888 });
@@ -93,13 +94,13 @@ export function createScene() {
       }
     }
   }
+
   
   function createPlayerOnBuilding() {
     const playerGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
     const playerMaterial = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
     const playerMesh = new THREE.Mesh(playerGeometry, playerMaterial);
 
-    // Find the first building and place the player on top
     for (let x = 0; x < city.size; x++) {
       for (let y = 0; y < city.size; y++) {
         const tile = city.data[x][y];
@@ -111,7 +112,7 @@ export function createScene() {
         }
       }
     }
-    // Fallback position if no building is found
+
     playerMesh.position.set(-4, 0.25, -4);
     scene.add(playerMesh);
     return playerMesh;
@@ -122,7 +123,6 @@ export function createScene() {
     const endPointMaterial = new THREE.MeshLambertMaterial({ color: 0xff0000 });
     const endPointMesh = new THREE.Mesh(endPointGeometry, endPointMaterial);
 
-    // Find the last building and place the endpoint on top
     for (let x = city.size - 1; x >= 0; x--) {
       for (let y = city.size - 1; y >= 0; y--) {
         const tile = city.data[x][y];
@@ -134,7 +134,7 @@ export function createScene() {
         }
       }
     }
-    // Fallback position if no building is found
+    
     endPointMesh.position.set(4, 0.25, 4);
     scene.add(endPointMesh);
     return endPointMesh;
@@ -167,7 +167,7 @@ export function createScene() {
     let lastTime = performance.now();
     function animate() {
       const now = performance.now();
-      const delta = (now - lastTime) / 1000; // Time in seconds
+      const delta = (now - lastTime) / 1000; 
       lastTime = now;
       draw(delta);
       requestAnimationFrame(animate);
@@ -188,7 +188,7 @@ export function createScene() {
       player.position.z -= Math.sin(player.rotation.y) * moveDirection.x * moveSpeed;
 
 
-      // Handle collision detection with buildings
+      
       const playerBoundingBox = new THREE.Box3().setFromObject(player);
 
       let onBuilding = false;
@@ -197,18 +197,17 @@ export function createScene() {
         if (playerBoundingBox.intersectsBox(buildingBoundingBox)) {
           onBuilding = true;
 
-          // Adjust player position to ensure they stay on top of buildings
+          
           const buildingHeight = buildingMesh.userData.height;
           if (player.position.y < buildingHeight) {
-            player.position.y = buildingHeight + 0.25; // Adjust so player is on top
+            player.position.y = buildingHeight + 0.25; 
           }
-          isGrounded = true; // Player is standing on a building
-          break;
+          isGrounded = true; 
         }
       }
 
       if (!onBuilding) {
-        isGrounded = false; // No building under the player
+        isGrounded = false; 
       }
     }
   }
@@ -237,7 +236,7 @@ export function createScene() {
         jumpVelocity -= gravity * delta;
         player.position.y += jumpVelocity * delta;
 
-        // Detect if player falls below ground
+       
         if (player.position.y < 0.25) {
           alert("You fell off the building! Game Over.");
           stop();
@@ -322,3 +321,4 @@ export function createScene() {
 
   return { scene, stop, initialize };
 }
+
