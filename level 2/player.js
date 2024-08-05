@@ -1,4 +1,6 @@
 import * as THREE from "three";
+// import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js';
+
 //NOTE : THIS CODE IS TAKEN AND INSPIRED FROM https://github.com/simondevyoutube/ThreeJS_Tutorial_CharacterController/blob/main/main.js
 // THIS IS IMPROVISED FOR OUR OWN USAGE
 
@@ -32,11 +34,15 @@ class BasicCharacterController{
     
         this.Player();
         this._target = this.mesh; //Initialize _target
+
+        // Initialize player bounding box
+        this.PlayerBB = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3());
+        this.PlayerBB.setFromObject(this.mesh);
       }
     
       //player creation
       Player(){
-            this.geometry = new THREE.SphereGeometry(2.3, 32, 32);
+            this.geometry = new THREE.BoxGeometry(3, 3, 3);
             this.material = new THREE.MeshBasicMaterial({ color: 0xFFC0CB });
             this.mesh = new THREE.Mesh(this.geometry, this.material);
     
@@ -112,12 +118,44 @@ class BasicCharacterController{
         controlObject.position.add(forward);
         controlObject.position.add(sideways);
     
-        oldPosition.copy(controlObject.position);
-    
+
+        // oldPosition.copy(controlObject.position);
+
+        //update player bounding box position
+        this.PlayerBB.setFromObject(this.mesh);
+
+        // Check collision with each wall
+        let collisionDetected = false;
+        for (const wall of this._params.walls) {
+            const WallBB = new THREE.Box3().setFromObject(wall);
+            if (this.checkCollision(WallBB)) {
+            collisionDetected = true;
+            break;
+          }
+        }
+
+
+        // If collision detected, revert to old position
+        if (collisionDetected) {
+          controlObject.position.copy(oldPosition);
+        }
+
         if (this._mixer) {
           this._mixer.update(timeInSeconds);
         }
-    }
+  }
+
+        checkCollision(WallBB) {
+          // Intersection test
+          return this.PlayerBB.intersectsBox(WallBB);
+      
+          // // Contains test
+          // if (this.PlayerBB.containsBox(WallBB)) {
+          //   this.mesh.scale.y = 3;
+          // } else {
+          //   this.mesh.scale.y = 1;
+          // }
+        }
 };
 
 
@@ -311,27 +349,6 @@ class WalkState extends State {
     }
 }
 
-
-function checkCollision() {
-  // Intersection test or touching test
-  if(PlayerBB.intersectsBox(wallBB)) { // bounding box vs bounding box
-    animation1();
-  } else {
-    Player.material.opacity = 1.0;
-  }
-
-  //contains test
-  if(PlayerBB.containsBox(wallBB)) { // bounding box contains bounding box
-    Player.scale.y = 3;
-  } else {
-    Player.scale.y = 1;
-  }
-}
-
-function animation1() {
-  Player.material.transparent = true;
-  Player.material.opacity = 0.5;
-}
 
 export { BasicCharacterController };
   
