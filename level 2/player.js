@@ -390,7 +390,7 @@ class WalkState extends State {
     Exit() {
     }
   
-    Update(timeElapsed, input) {
+    Update(_, input) {
         if (input._keys.forward || input._keys.backward) {
             //if the player is previously in walk state then return
             return;
