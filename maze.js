@@ -18,6 +18,10 @@ function setup() {
             grid.push(cell);
         }
     }
+ 
+    //download the mazedata
+    let exportButton = createButton('Export Compressed Maze Data');
+    exportButton.mousePressed(exportCompressedMazeData);
 
     current = grid[0];
 }
@@ -146,4 +150,15 @@ function removeWalls(a, b) {
         a.walls[2] = false;
         b.walls[0] = false;
     }
+}
+
+function exportCompressedMazeData() {
+    let mazeData = getMazeData();
+    let compressedData = pako.gzip(JSON.stringify(mazeData), { to: 'string' });
+    let blob = new Blob([compressedData], { type: 'application/gzip' });
+    let url = URL.createObjectURL(blob);
+    let a = document.createElement('a');
+    a.href = url;
+    a.download = 'mazeData.gz';
+    a.click();
 }
