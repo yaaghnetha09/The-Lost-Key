@@ -31,8 +31,12 @@ const pointLight = new THREE.PointLight(0xffffff, 1);
 pointLight.position.set(50, 50, 50);
 scene.add(pointLight);
 
-//create the player
-const player = new BasicCharacterController({ scene });
+// a list to update the walls to player.js file, pushed each wall in line 138
+const walls = [];
+
+//create the player from controller class
+//Passed the walls to player controller 
+const player = new BasicCharacterController({ scene, walls });
 
 // Wall dimensions
 const wall_height = 3;
@@ -131,6 +135,8 @@ fetch('./mazeData.json')
   
     scene.add(wall);
 
+    //added wall to the list for collision detection
+    walls.push(wall);
   }
 
   
@@ -197,6 +203,7 @@ camera.lookAt(new THREE.Vector3(0, 0, 0));
     requestAnimationFrame(animate);
     // controls.update();
     const delta = clock.getDelta();
+    //player updation in animation loop
     player.Update(delta);
     renderer.render(scene, camera);
   }
