@@ -20,6 +20,18 @@ export function createScene() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
+const loader = new THREE.CubeTextureLoader();
+const textureCube = loader.load([
+  'public/x minus.jpeg',
+  'public/x plus.jpeg',
+  'public/y minus.jpeg',
+  'public/y plus.jpeg',
+  'public/z minus.jpeg',
+  'public/z plus.jpeg',
+]);
+scene.background = textureCube;
+
+
   let player = null;
   let endPoint = null;
   let city = null;
@@ -296,12 +308,6 @@ const textures = [
       case 'ArrowDown':
         moveDirection.z = -1;
         break;
-      case 'ArrowLeft':
-        moveDirection.x = -1;
-        break;
-      case 'ArrowRight':
-        moveDirection.x = 1;
-        break;
       case 'a':
         playerRotationY += rotationSpeed;
         break;
@@ -322,10 +328,6 @@ const textures = [
       case 'ArrowUp':
       case 'ArrowDown':
         moveDirection.z = 0;
-        break;
-      case 'ArrowLeft':
-      case 'ArrowRight':
-        moveDirection.x = 0;
         break;
     }
   });
