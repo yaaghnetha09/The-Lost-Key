@@ -42,20 +42,14 @@ function draw() {
         removeWalls(current, next);
         // STEP 4
         current = next;
-    } else {
-        if(stack.length > 0) // if stack is empty pop the last cell; 
+    } else if(stack.length > 0){
+         // if stack is empty pop the last cell; 
         // also if there are no neighbors and no current cell i.e if struck to backtrack
         // when no available unvisited neighbors i.e neighbors function returns 'undefined'
-        {
+        
             current = stack.pop();
-        }
+        
     }
-
-    // Update maze data after maze generation is complete
-    if (stack.length === 0 && current === grid[0]) {
-        updateMazeData();
-    }
-
 }
 
 function index(i, j) {
@@ -154,23 +148,4 @@ function removeWalls(a, b) {
         a.walls[2] = false;
         b.walls[0] = false;
     }
-}
-
-// Function to update maze data after generation is complete
-function updateMazeData() {
-    mazeData = [];
-    for (var j = 0; j < rows; j++) {
-        var row = [];
-        for (var i = 0; i < cols; i++) {
-            var cell = grid[index(i, j)];
-            row.push({
-                walls: cell.walls,
-                visited: cell.visited
-            });
-        }
-        mazeData.push(row);
-    }
-    
-    console.log(mazeData);
-    // Store the maze data in the global variable declared in index.html
 }
