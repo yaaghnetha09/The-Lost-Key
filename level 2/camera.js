@@ -10,6 +10,17 @@ class ThirdPersonCamera {
         this._currentPosition = new THREE.Vector3();
         this._currentLookat = new THREE.Vector3();
     }
+
+    Update(timeElapsed) {
+        const idealOffSet = this.CalculateIdealOffset();
+        const idealLookat = this.CalculateIdealLooAt();
+
+        this._currentPosition.copy(idealOffSet);
+        this._currentPosition.copy(idealLoookat);
+
+        this._camera.position.copy(this._currentPosition);
+        this._camera.lookAt(this.currentLookat);
+    }
 }
 
 
