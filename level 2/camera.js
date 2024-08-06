@@ -31,8 +31,20 @@ class ThirdPersonCamera {
         const idealOffSet = this._CalculateIdealOffset();
         const idealLookat = this._CalculateIdealLookat();
 
-        this._currentPosition.copy(idealOffSet);
-        this._currentPosition.copy(idealLookat);
+        // to get the spring effect
+        // const t = 0.15;
+
+        //here camera movement isn't frame rte dependent, it is 
+        // changing by a constant factor
+        // we can modify this to look good, so to make it correct we have to multiply the coefficient with frame time
+
+        // const t = 4.0 * timeElapsed;
+         // the below one is completely frame rate independent, than above one
+
+        const t = 1.0 - Math.pow(0.001, timeElapsed);
+        
+        this._currentPosition.lerp(idealOffSet, t);
+        this._currentPosition.lerp(idealLookat, t);
 
         this._camera.position.copy(this._currentPosition);
         this._camera.lookAt(this._currentLookat);
