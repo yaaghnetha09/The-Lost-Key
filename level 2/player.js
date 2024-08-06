@@ -312,53 +312,6 @@ class State {
 }
 
 
-// state class for idle state
-// comes to rest when entered
-class IdleState extends State {
-    constructor(parent) {
-      super(parent);// Call the parent constructor (State)
-    }
-  
-    // Getter for the state's name
-    get Name() {
-      return 'idle';
-    }
-  
-    //function called when the state is entered
-    Enter(prevState) {
-      // Get the idle animation action from the proxy
-      const idleAction = this._parent._proxy._animations['idle'].action;
-
-      //// iff there was a previous state,  transition from its animation
-      if (prevState) {
-        const prevAction = this._parent._proxy._animations[prevState.Name].action;
-        idleAction.time = 0.0;
-        idleAction.enabled = true;
-        idleAction.setEffectiveTimeScale(1.0);
-        idleAction.setEffectiveWeight(1.0);
-        idleAction.crossFadeFrom(prevAction, 0.5, true);
-        idleAction.play();
-      } else {
-         //if there was no previous state,just play the idle animation;
-        idleAction.play();
-      }
-    }
-  
-    //function called when the state is exited
-    Exit() {
-      //nothing is written as there are no specific actions needed when exiting the idle state 
-    }
-  
-    //function called on every frame update
-    Update(_, input) {
-      // If any movement key is pressed then  switch to the walk state
-      if (input._keys.forward || input._keys.backward) {
-        this._parent.SetState('walk');
-      }
-    }
-};
-
-
 //state class for walk state
 class WalkState extends State {
     constructor(parent) {
@@ -390,7 +343,7 @@ class WalkState extends State {
     Exit() {
     }
   
-    Update(_, input) {
+    Update(timeElapsed, input) {
         if (input._keys.forward || input._keys.backward) {
             //if the player is previously in walk state then return
             return;
@@ -399,6 +352,53 @@ class WalkState extends State {
         this._parent.SetState('idle');
     }
 }
+
+
+// state class for idle state
+// comes to rest when entered
+class IdleState extends State {
+  constructor(parent) {
+    super(parent);// Call the parent constructor (State)
+  }
+
+  // Getter for the state's name
+  get Name() {
+    return 'idle';
+  }
+
+  //function called when the state is entered
+  Enter(prevState) {
+    // Get the idle animation action from the proxy
+    const idleAction = this._parent._proxy._animations['idle'].action;
+
+    //// iff there was a previous state,  transition from its animation
+    if (prevState) {
+      const prevAction = this._parent._proxy._animations[prevState.Name].action;
+      idleAction.time = 0.0;
+      idleAction.enabled = true;
+      idleAction.setEffectiveTimeScale(1.0);
+      idleAction.setEffectiveWeight(1.0);
+      idleAction.crossFadeFrom(prevAction, 0.5, true);
+      idleAction.play();
+    } else {
+       //if there was no previous state,just play the idle animation;
+      idleAction.play();
+    }
+  }
+
+  //function called when the state is exited
+  Exit() {
+    //nothing is written as there are no specific actions needed when exiting the idle state 
+  }
+
+  //function called on every frame update
+  Update(_, input) {
+    // If any movement key is pressed then  switch to the walk state
+    if (input._keys.forward || input._keys.backward) {
+      this._parent.SetState('walk');
+    }
+  }
+};
 
 
 export { BasicCharacterController };
