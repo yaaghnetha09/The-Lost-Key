@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import { BasicCharacterController } from "./player.js";
 
-
 class ThirdPersonCamera {
     constructor(params) {
         this._params = params;
@@ -53,6 +52,47 @@ class ThirdPersonCamera {
 
 
 class ThirdpersonCameraDemo {
+  constructor() {
+    this._Initialize();
+  }
+
+  _Initialize() {
+    this._threejs = new THREE.WebGLRenderer({
+      antialias: true,
+    });
+
+    document.body.appendChild(this._threejs.domElement);
+
+  
+    this._camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+    this._camera.position.set(25, 10, 25);
+
+    this._scene = new THREE.Scene();
+
+    this._controls = new BasicCharacterController({
+      scene: this._scene,
+    });
+
+    this._thirdPersonCamera = new ThirdPersonCamera({
+      camera: this._camera,
+      target: this._controls,
+  });
+
+    window.addEventListener('resize', () => {
+    this._OnWindowResize();
+    }, false);
+
+    this._mixers = [];
+    this._previousRAF = null;
+    this._RAF();
+  }
+
+  _OnWindowResize() {
+    this._camera.aspect = window.innerWidth / window.innerHeight;
+    this._camera.updateProjectionMatrix();
+    this._threejs.setSize(window.innerWidth, window.innerHeight);
+  }
+
     _RAF() {
         requestAnimationFrame((t) => {
           if (this._previousRAF === null) {
@@ -79,3 +119,5 @@ class ThirdpersonCameraDemo {
         this._thirdPersonCamera.Update(timeElapsedS);
       }
 }
+
+export {ThirdpersonCameraDemo};
