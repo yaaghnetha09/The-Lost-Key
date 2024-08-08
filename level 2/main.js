@@ -12,7 +12,7 @@ const aspect = w / h;
 const near = 0.1;
 const far = 1000;
 const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-camera.position.z = 5;
+camera.position.set(25, 10, 25);
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(w, h);
 // renderer.setAnimationLoop( animate );
@@ -41,9 +41,9 @@ const player = new BasicCharacterController({ scene, walls });
 
 
 // Wall dimensions
-const wall_height = 3;
-const wall_width = 0.2;
-const cell_size = 5;
+const wall_height = 4;
+const wall_width = 0.4;
+const cell_size = 7;
 
 //start and end point of maze
 const start_point = {i: 0, j: 0};
