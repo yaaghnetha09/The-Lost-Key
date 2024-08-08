@@ -1,6 +1,7 @@
 import * as THREE from "three";
 // import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js';
 import { BasicCharacterController } from "./player.js";
+import {ThirdpersonCameraDemo} from "./camera.js";
 
 //scene creation
 const w = window.innerWidth;
@@ -37,6 +38,7 @@ const walls = [];
 //create the player from controller class
 //Passed the walls to player controller 
 const player = new BasicCharacterController({ scene, walls });
+
 
 // Wall dimensions
 const wall_height = 3;
@@ -211,3 +213,11 @@ camera.lookAt(new THREE.Vector3(0, 0, 0));
   // Clock for time-based animation
 const clock = new THREE.Clock();
 animate();
+
+// Initialize and run the third-person camera demo
+const thirdPersonDemo = new ThirdpersonCameraDemo({ 
+  scene: scene,
+  camera: camera, 
+  walls: walls 
+});
+thirdPersonDemo._Initialize();
