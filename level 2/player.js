@@ -53,6 +53,14 @@ class BasicCharacterController{
             this._params.scene.add(this.mesh);
         }
 
+        get Position() {
+          return this.mesh.position;
+        }
+      
+        get Rotation() {
+          return this.mesh.quaternion;
+        }
+
     // update function to handel movement and collision with walls
     Update(timeInSeconds) {
       //check if the target (player mesh) is defined
