@@ -11,7 +11,7 @@ class ThirdPersonCamera {
     }
 
     _CalculateIdealOffset() {
-        const idealOffset = new THREE.Vector3(-15, 20, -30);
+        const idealOffset = new THREE.Vector3(0, 5, -5);
         idealOffset.applyQuaternion(this._params.target.Rotation);
         idealOffset.add(this._params.target.Position);
         return idealOffset;
@@ -19,40 +19,25 @@ class ThirdPersonCamera {
 
 
     _CalculateIdealLookat() {
-        const idealLookat = new THREE.Vector3(0, 10, 50);
+        const idealLookat = new THREE.Vector3(0, 2, 0);
         idealLookat.applyQuaternion(this._params.target.Rotation);
         idealLookat.add(this._params.target.Position);
         return idealLookat;
     }
 
 
-    Update(timeElapsed) {
+    Update() {
         const idealOffSet = this._CalculateIdealOffset();
         const idealLookat = this._CalculateIdealLookat();
-
-        // to get the spring effect
-        // const t = 0.15;
-
-        //here camera movement isn't frame rte dependent, it is 
-        // changing by a constant factor
-        // we can modify this to look good, so to make it correct we have to multiply the coefficient with frame time
-
-        // const t = 4.0 * timeElapsed;
-         // the below one is completely frame rate independent, than above one
-
-        const t = 1.0 - Math.pow(0.001, timeElapsed);
-        
-        this._currentPosition.lerp(idealOffSet, t);
-        this._currentPosition.lerp(idealLookat, t);
-
-        this._camera.position.copy(this._currentPosition);
-        this._camera.lookAt(this._currentLookat);
+        this._camera.position.copy(idealOffSet);
+        this._camera.lookAt(idealLookat);
     }
 }
 
 
 class ThirdpersonCameraDemo {
-  constructor() {
+  constructor(params) {
+    this._params = params;
     this._Initialize();
   }
 
@@ -63,14 +48,13 @@ class ThirdpersonCameraDemo {
 
     document.body.appendChild(this._threejs.domElement);
 
-  
-    this._camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-    this._camera.position.set(25, 10, 25);
 
-    this._scene = new THREE.Scene();
+    this._camera = this._params.camera; 
+    this._scene = this._params.scene;
 
     this._controls = new BasicCharacterController({
       scene: this._scene,
+      walls: this._params.walls // Pass walls here
     });
 
     this._thirdPersonCamera = new ThirdPersonCamera({
@@ -86,6 +70,7 @@ class ThirdpersonCameraDemo {
     this._previousRAF = null;
     this._RAF();
   }
+
 
   _OnWindowResize() {
     this._camera.aspect = window.innerWidth / window.innerHeight;
@@ -106,10 +91,12 @@ class ThirdpersonCameraDemo {
           this._previousRAF = t;
         });
       }
+
+
       _Step(timeElapsed) {
         const timeElapsedS = timeElapsed * 0.001;
         if (this._mixers) {
-          this._mixers.map(m => m.update(timeElapsedS));
+          this._mixers.forEach(m => m.update(timeElapsedS));
         }
     
         if (this._controls) {
