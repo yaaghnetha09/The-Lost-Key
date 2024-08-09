@@ -11,7 +11,7 @@ class ThirdPersonCamera {
     }
 
     _CalculateIdealOffset() {
-        const idealOffset = new THREE.Vector3(0, 5, -5);
+        const idealOffset = new THREE.Vector3(0, 3, -5);
         idealOffset.applyQuaternion(this._params.target.Rotation);
         idealOffset.add(this._params.target.Position);
         return idealOffset;
