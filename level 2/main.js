@@ -4,15 +4,32 @@ import { BasicCharacterController } from "./player.js";
 import {ThirdpersonCameraDemo} from "./camera.js";
 
 //scene creation
+const scene = new THREE.Scene();
+
+// Load skybox images
+const loader = new THREE.CubeTextureLoader();
+const skyboxTexture = loader.load([
+  '/assets/images/skybox_px.png', // Right
+  '/assets/images/skybox_nx.png', // Left
+  '/assets/images/skybox_py.png', // Top
+  '/assets/images/skybox_ny.png', // Bottom
+  '/assets/images/skybox_pz.png', // Front
+  '/assets/images/skybox_nz.png'  // Back
+]);
+
+// Set the skybox as the scene's background
+scene.background = skyboxTexture;
+
+
 const w = window.innerWidth;
 const h = window.innerHeight;
-const scene = new THREE.Scene();
 const fov = 75;
 const aspect = w / h;
 const near = 0.1;
 const far = 1000;
 const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
 camera.position.set(25, 10, 25);
+
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(w, h);
 // renderer.setAnimationLoop( animate );
@@ -39,9 +56,17 @@ const walls = [];
 //Passed the walls to player controller 
 const player = new BasicCharacterController({ scene, walls });
 
+// Clock for time-based animation
+const clock = new THREE.Clock();
+
+//wall texture
+const snow_wall = '/assets/images/drystonewall.webp';
+
+//floor texture
+
 
 // Wall dimensions
-const wall_height = 10;
+const wall_height = 6;
 const wall_width = 0.5;
 const cell_size = 10;
 
@@ -85,28 +110,32 @@ fetch('./mazeData.json')
         createWall(
           new THREE.Vector3(x-cell_size/2, 0, z-cell_size/2),
           new THREE.Vector3(x+cell_size/2, 0, z-cell_size/2),
-          true
+          true,
+          snow_wall
         );
       }
       if (walls[1]) { //right wall
         createWall(
           new THREE.Vector3(x+cell_size/2, 0, z-cell_size/2),
           new THREE.Vector3(x+cell_size/2, 0, z+cell_size/2),
-          false
+          false,
+          snow_wall
         );
       }
       if (walls[2]) { //bottom wall
         createWall(
           new THREE.Vector3(x-cell_size/2, 0, z+cell_size/2),
           new THREE.Vector3(x+cell_size/2, 0, z+cell_size/2),
-          true
+          true,
+          snow_wall
         );
       }
       if (walls[3]) { //left wall
         createWall(
           new THREE.Vector3(x-cell_size/2, 0, z-cell_size/2),
           new THREE.Vector3(x-cell_size/2, 0, z+cell_size/2),
-          false
+          false,
+          snow_wall
         );
       }
     });
@@ -117,15 +146,15 @@ fetch('./mazeData.json')
   }
 
 
-
-  function createWall(start, end, isHorizontal) {
+  function createWall(start, end, isHorizontal, snow_wall) {
     const length = start.distanceTo(end);
     const geometry = new THREE.BoxGeometry(
       isHorizontal ? length : wall_width, 
     wall_height, 
     isHorizontal ? wall_width : length
     )
-    const material = new THREE.MeshBasicMaterial({color: 0x00fff0});
+    const texture = new THREE.TextureLoader().load(snow_wall);
+    const material = new THREE.MeshBasicMaterial({map: texture});
     const wall = new THREE.Mesh(geometry, material);
   
     //Set wall position at the midpoint
@@ -210,8 +239,7 @@ camera.lookAt(new THREE.Vector3(0, 0, 0));
     renderer.render(scene, camera);
   }
 
-  // Clock for time-based animation
-const clock = new THREE.Clock();
+
 animate();
 
 // Initialize and run the third-person camera demo
