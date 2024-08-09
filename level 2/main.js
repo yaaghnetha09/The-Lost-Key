@@ -41,9 +41,9 @@ const player = new BasicCharacterController({ scene, walls });
 
 
 // Wall dimensions
-const wall_height = 4;
-const wall_width = 0.4;
-const cell_size = 7;
+const wall_height = 10;
+const wall_width = 0.5;
+const cell_size = 10;
 
 //start and end point of maze
 const start_point = {i: 0, j: 0};
