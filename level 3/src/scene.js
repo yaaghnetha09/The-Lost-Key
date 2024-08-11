@@ -56,23 +56,12 @@ const textures = [
     textureLoader.load('public/Predio 6.jpeg')
 ];
 
-  
-
-
   function initialize(cityData) {
     city = cityData;
     scene.clear();
     allBuildingMeshes = [];
 
     addRoads();
-
-    // Add grass ground
-    const groundGeometry = new THREE.PlaneGeometry(city.size, city.size);
-    const groundMaterial = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
-    const ground = new THREE.Mesh(groundGeometry, groundMaterial);
-    ground.rotation.x = -Math.PI / 2;
-    ground.position.set(city.size / 2 - 0.5, 0, city.size / 2 - 0.5);
-    scene.add(ground);
 
     for (let x = 0; x < city.size; x++) {
       for (let y = 0; y < city.size; y++) {
@@ -99,28 +88,66 @@ const textures = [
   }
 
   function addRoads() {
-    const roadWidth = 2;
+    const roadWidth = 2; // Width of each road section
     const roadMaterial = new THREE.MeshLambertMaterial({ color: 0x888888 });
+    const mazeSize = city.size * roadWidth; // Maze size in units
+
+    // Create roads covering the entire maze
+    const roadGeometry = new THREE.BoxGeometry(roadWidth, 0.1, roadWidth);
+
+    // Iterate through each grid cell and place a road
+    for (let x = 0; x < city.size; x++) {
+        for (let y = 0; y < city.size; y++) {
+            // Create road section
+            const roadMesh = new THREE.Mesh(roadGeometry, roadMaterial);
+            roadMesh.position.set(x * roadWidth - mazeSize / 2 + roadWidth / 2, 0, y * roadWidth - mazeSize / 2 + roadWidth / 2);
+            scene.add(roadMesh);
+        }
+    }
+
+    // Add white lines in the middle of each road section
+    const lineMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    const lineWidth = 0.1; // Width of the line
+    const lineHeight = 0.01; // Height of the line
 
     for (let x = 0; x < city.size; x++) {
-      for (let y = 0; y < city.size; y++) {
-        if ((x % 2 === 0 || y % 2 === 0) && !(city.data[x][y].building)) {
-          const roadGeometry = new THREE.BoxGeometry(roadWidth, 0.1, roadWidth);
-          const roadMesh = new THREE.Mesh(roadGeometry, roadMaterial);
-          roadMesh.position.set(x, 0, y);
-          scene.add(roadMesh);
-
-          const lineMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
-          const lineGeometry = new THREE.BoxGeometry(0.1, 0.01, roadWidth);
-          const lineMesh = new THREE.Mesh(lineGeometry, lineMaterial);
-          lineMesh.position.set(x, 0.05, y);
-          scene.add(lineMesh);
+        for (let y = 0; y < city.size; y++) {
+            const lineGeometry = new THREE.BoxGeometry(lineWidth, lineHeight, roadWidth);
+            const lineMesh = new THREE.Mesh(lineGeometry, lineMaterial);
+            lineMesh.position.set(x * roadWidth - mazeSize / 2 + roadWidth / 2, 0.05, y * roadWidth - mazeSize / 2 + roadWidth / 2);
+            scene.add(lineMesh);
         }
-      }
     }
-  }
 
-  
+    // Add enclosing walls around the maze
+    const wallHeight = 1; // Height of the walls
+    const wallThickness = 0.5; // Thickness of the walls
+
+    // Top Wall
+    const topWallGeometry = new THREE.BoxGeometry(mazeSize + wallThickness, wallHeight, wallThickness);
+    const topWallMesh = new THREE.Mesh(topWallGeometry, roadMaterial);
+    topWallMesh.position.set(0, wallHeight / 2, -mazeSize / 2 - wallThickness / 2);
+    scene.add(topWallMesh);
+
+    // Bottom Wall
+    const bottomWallGeometry = new THREE.BoxGeometry(mazeSize + wallThickness, wallHeight, wallThickness);
+    const bottomWallMesh = new THREE.Mesh(bottomWallGeometry, roadMaterial);
+    bottomWallMesh.position.set(0, wallHeight / 2, mazeSize / 2 + wallThickness / 2);
+    scene.add(bottomWallMesh);
+
+    // Left Wall
+    const leftWallGeometry = new THREE.BoxGeometry(wallThickness, wallHeight, mazeSize + wallThickness);
+    const leftWallMesh = new THREE.Mesh(leftWallGeometry, roadMaterial);
+    leftWallMesh.position.set(-mazeSize / 2 - wallThickness / 2, wallHeight / 2, 0);
+    scene.add(leftWallMesh);
+
+    // Right Wall
+    const rightWallGeometry = new THREE.BoxGeometry(wallThickness, wallHeight, mazeSize + wallThickness);
+    const rightWallMesh = new THREE.Mesh(rightWallGeometry, roadMaterial);
+    rightWallMesh.position.set(mazeSize / 2 + wallThickness / 2, wallHeight / 2, 0);
+    scene.add(rightWallMesh);
+}
+
   function createPlayerOnBuilding() {
     const playerGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
     const playerMaterial = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
