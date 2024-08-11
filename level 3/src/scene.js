@@ -21,16 +21,17 @@ export function createScene() {
 });
 
 const loader = new THREE.CubeTextureLoader();
-const textureCube = loader.load([
-  'public/x minus.jpeg',
-  'public/x plus.jpeg',
-  'public/y minus.jpeg',
-  'public/y plus.jpeg',
-  'public/z minus.jpeg',
-  'public/z plus.jpeg',
+const skyboxTexture = loader.load([
+  '/assets/images/skybox_px.png', // Right
+  '/assets/images/skybox_nx.png', // Left
+  '/assets/images/skybox_py.png', // Top
+  '/assets/images/skybox_ny.png', // Bottom
+  '/assets/images/skybox_pz.png', // Front
+  '/assets/images/skybox_nz.png'  // Back
 ]);
-scene.background = textureCube;
 
+// Set the skybox as the scene's background
+scene.background = skyboxTexture;
 
   let player = null;
   let endPoint = null;
@@ -55,60 +56,62 @@ const textures = [
     textureLoader.load('public/Light blue tile Wall Online Zoom Background Template - VistaCreate.jpeg'), 
     textureLoader.load('public/Predio 6.jpeg')
 ];
+const roadWidth = 2; 
+function initialize(cityData) {
+  city = cityData;
+  scene.clear();
+  allBuildingMeshes = [];
 
-  function initialize(cityData) {
-    city = cityData;
-    scene.clear();
-    allBuildingMeshes = [];
+  addRoads(); // Add continuous roads first
 
-    addRoads();
-
-    for (let x = 0; x < city.size; x++) {
+  for (let x = 0; x < city.size; x++) {
       for (let y = 0; y < city.size; y++) {
-        const tile = city.data[x][y];
-        if (tile.building) {
-          const height = Number(tile.building.slice(-1));
-          const buildingGeometry = new THREE.BoxGeometry(1, height, 1);
+          const tile = city.data[x][y];
+          if (tile.building) {
+             const height = Number(tile.building.slice(-1)); // Extract height from building description
+              const buildingGeometry = new THREE.BoxGeometry(roadWidth, height, roadWidth);
 
-          const textureIndex = (x + y) % textures.length; 
-          const buildingMaterial = new THREE.MeshLambertMaterial({  map: textures[textureIndex] });
-          const buildingMesh = new THREE.Mesh(buildingGeometry, buildingMaterial);
-          buildingMesh.position.set(x, height / 2, y);
-          buildingMesh.userData = { height };
-          scene.add(buildingMesh);
-          allBuildingMeshes.push(buildingMesh); 
+              const textureIndex = (x + y) % textures.length; 
+              const buildingMaterial = new THREE.MeshLambertMaterial({ map: textures[textureIndex] });
+              const buildingMesh = new THREE.Mesh(buildingGeometry, buildingMaterial);
+
+              // Position the building on top of the road
+              buildingMesh.position.set(x * roadWidth - (city.size * roadWidth) / 2 + roadWidth / 2, height / 2, y * roadWidth - (city.size * roadWidth) / 2 + roadWidth / 2);
+
+              buildingMesh.userData = { height };
+              scene.add(buildingMesh);
+              allBuildingMeshes.push(buildingMesh);
+          }
       }
-    }
   }
 
-    player = createPlayerOnBuilding();
-    endPoint = createEndPointOnBuilding();
+  player = createPlayerOnBuilding(); // Ensure the player is created after buildings
+  endPoint = createEndPointOnBuilding(); // Ensure the end point is created after buildings
 
-    setupLights();
-  }
+  setupLights(); // Set up lights for better visibility
+}
 
-  function addRoads() {
-    const roadWidth = 2; // Width of each road section
+
+function addRoads() {
     const roadMaterial = new THREE.MeshLambertMaterial({ color: 0x888888 });
-    const mazeSize = city.size * roadWidth; // Maze size in units
+    const mazeSize = city.size * roadWidth;
 
-    // Create roads covering the entire maze
     const roadGeometry = new THREE.BoxGeometry(roadWidth, 0.1, roadWidth);
 
-    // Iterate through each grid cell and place a road
+   
     for (let x = 0; x < city.size; x++) {
         for (let y = 0; y < city.size; y++) {
-            // Create road section
+           
             const roadMesh = new THREE.Mesh(roadGeometry, roadMaterial);
             roadMesh.position.set(x * roadWidth - mazeSize / 2 + roadWidth / 2, 0, y * roadWidth - mazeSize / 2 + roadWidth / 2);
             scene.add(roadMesh);
         }
     }
 
-    // Add white lines in the middle of each road section
+   
     const lineMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
-    const lineWidth = 0.1; // Width of the line
-    const lineHeight = 0.01; // Height of the line
+    const lineWidth = 0.1; 
+    const lineHeight = 0.01; 
 
     for (let x = 0; x < city.size; x++) {
         for (let y = 0; y < city.size; y++) {
@@ -118,10 +121,9 @@ const textures = [
             scene.add(lineMesh);
         }
     }
-
-    // Add enclosing walls around the maze
-    const wallHeight = 1; // Height of the walls
-    const wallThickness = 0.5; // Thickness of the walls
+   
+    const wallHeight = 1; 
+    const wallThickness = 0.5;
 
     // Top Wall
     const topWallGeometry = new THREE.BoxGeometry(mazeSize + wallThickness, wallHeight, wallThickness);
@@ -148,49 +150,58 @@ const textures = [
     scene.add(rightWallMesh);
 }
 
-  function createPlayerOnBuilding() {
-    const playerGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
-    const playerMaterial = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
-    const playerMesh = new THREE.Mesh(playerGeometry, playerMaterial);
+function createPlayerOnBuilding() {
+  const playerGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+  const playerMaterial = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
+  const playerMesh = new THREE.Mesh(playerGeometry, playerMaterial);
 
-    for (let x = 0; x < city.size; x++) {
+  for (let x = 0; x < city.size; x++) {
       for (let y = 0; y < city.size; y++) {
-        const tile = city.data[x][y];
-        if (tile.building) {
-          const height = Number(tile.building.slice(-1));
-          playerMesh.position.set(x, height + 0.25, y);
-          scene.add(playerMesh);
-          return playerMesh;
-        }
+          const tile = city.data[x][y];
+          if (tile.building) {
+              const height = Number(tile.building.slice(-1));
+              playerMesh.position.set(
+                  x * roadWidth - (city.size * roadWidth) / 2 + roadWidth / 2,
+                  height + 0.25,
+                  y * roadWidth - (city.size * roadWidth) / 2 + roadWidth / 2
+              );
+              scene.add(playerMesh);
+              return playerMesh;
+          }
       }
-    }
-
-    playerMesh.position.set(-4, 0.25, -4);
-    scene.add(playerMesh);
-    return playerMesh;
   }
 
-  function createEndPointOnBuilding() {
-    const endPointGeometry = new THREE.SphereGeometry(0.25, 32, 32);
-    const endPointMaterial = new THREE.MeshLambertMaterial({ color: 0xff0000 });
-    const endPointMesh = new THREE.Mesh(endPointGeometry, endPointMaterial);
+  playerMesh.position.set(-4, 0.25, -4); // Default position if no building is found
+  scene.add(playerMesh);
+  return playerMesh;
+}
 
-    for (let x = city.size - 1; x >= 0; x--) {
+function createEndPointOnBuilding() {
+  const endPointGeometry = new THREE.SphereGeometry(0.25, 32, 32);
+  const endPointMaterial = new THREE.MeshLambertMaterial({ color: 0xff0000 });
+  const endPointMesh = new THREE.Mesh(endPointGeometry, endPointMaterial);
+
+  for (let x = city.size - 1; x >= 0; x--) {
       for (let y = city.size - 1; y >= 0; y--) {
-        const tile = city.data[x][y];
-        if (tile.building) {
-          const height = Number(tile.building.slice(-1));
-          endPointMesh.position.set(x, height + 0.25, y);
-          scene.add(endPointMesh);
-          return endPointMesh;
-        }
+          const tile = city.data[x][y];
+          if (tile.building) {
+              const height = Number(tile.building.slice(-1));
+              endPointMesh.position.set(
+                  x * roadWidth - (city.size * roadWidth) / 2 + roadWidth / 2,
+                  height + 0.25,
+                  y * roadWidth - (city.size * roadWidth) / 2 + roadWidth / 2
+              );
+              scene.add(endPointMesh);
+              return endPointMesh;
+          }
       }
-    }
-    
-    endPointMesh.position.set(4, 0.25, 4);
-    scene.add(endPointMesh);
-    return endPointMesh;
   }
+
+  endPointMesh.position.set(4, 0.25, 4); // Default position if no building is found
+  scene.add(endPointMesh);
+  return endPointMesh;
+}
+
 
   function setupLights() {
     const lights = [
@@ -230,125 +241,127 @@ const textures = [
   function stop() {
     renderer.setAnimationLoop(null);
   }
-
   function movePlayer(delta) {
     if (player) {
-      const moveSpeed = playerSpeed * delta;
-      player.position.x += Math.sin(player.rotation.y) * moveDirection.z * moveSpeed;
-      player.position.z += Math.cos(player.rotation.y) * moveDirection.z * moveSpeed;
-      player.position.x += Math.cos(player.rotation.y) * moveDirection.x * moveSpeed;
-      player.position.z -= Math.sin(player.rotation.y) * moveDirection.x * moveSpeed;
+        const moveSpeed = playerSpeed * delta;
 
-
-      
-      const playerBoundingBox = new THREE.Box3().setFromObject(player);
-
-      let onBuilding = false;
-      for (const buildingMesh of allBuildingMeshes) {
-        const buildingBoundingBox = new THREE.Box3().setFromObject(buildingMesh);
-        if (playerBoundingBox.intersectsBox(buildingBoundingBox)) {
-          onBuilding = true;
-
-          
-          const buildingHeight = buildingMesh.userData.height;
-          if (player.position.y < buildingHeight) {
-            player.position.y = buildingHeight + 0.25; 
-          }
-          isGrounded = true; 
+        // Prevent backward movement while jumping
+        if (isGrounded || moveDirection.z !== -1) {
+            player.position.x += Math.sin(player.rotation.y) * moveDirection.z * moveSpeed;
+            player.position.z += Math.cos(player.rotation.y) * moveDirection.z * moveSpeed;
         }
-      }
 
-      if (!onBuilding) {
-        isGrounded = false; 
-      }
+        player.position.x += Math.cos(player.rotation.y) * moveDirection.x * moveSpeed;
+        player.position.z -= Math.sin(player.rotation.y) * moveDirection.x * moveSpeed;
+
+        const playerBoundingBox = new THREE.Box3().setFromObject(player);
+
+        let onBuilding = false;
+        for (const buildingMesh of allBuildingMeshes) {
+            const buildingBoundingBox = new THREE.Box3().setFromObject(buildingMesh);
+            if (playerBoundingBox.intersectsBox(buildingBoundingBox)) {
+                onBuilding = true;
+
+                const buildingHeight = buildingMesh.userData.height;
+                if (player.position.y < buildingHeight) {
+                    player.position.y = buildingHeight + 0.25;
+                }
+                isGrounded = true;
+            }
+        }
+
+        if (!onBuilding) {
+            isGrounded = false;
+        }
     }
-  }
+}
 
-  function rotatePlayer(rotationDelta) {
+function rotatePlayer(rotationDelta) {
     if (player) {
-      player.rotation.y += rotationDelta * rotationSpeed;
+        player.rotation.y += rotationDelta * rotationSpeed;
     }
-  }
+}
 
-  function jumpPlayer() {
+function jumpPlayer() {
     if (isGrounded) {
-      isJumping = true;
-      jumpVelocity = jumpSpeed;
+        isJumping = true;
+        jumpVelocity = jumpSpeed;
     }
-  }
+}
 
-  function applyGravity(delta) {
+function applyGravity(delta) {
     if (player) {
-      if (isGrounded) {
-        player.position.y = Math.floor(player.position.y) + 0.25;
-        if (!isJumping) {
-          jumpVelocity = 0;
-        }
-      } else {
-        jumpVelocity -= gravity * delta;
-        player.position.y += jumpVelocity * delta;
+        if (isGrounded) {
+            player.position.y = Math.floor(player.position.y) + 0.25;
+            if (!isJumping) {
+                jumpVelocity = 0;
+            }
+        } else {
+            jumpVelocity -= gravity * delta;
+            player.position.y += jumpVelocity * delta;
 
-       
-        if (player.position.y < 0.25) {
-          alert("You fell off the building! Game Over.");
-          stop();
+            if (player.position.y < 0.25) {
+                alert("You fell off the building! Game Over.");
+                stop();
+            }
         }
-      }
 
-      if (isJumping) {
-        player.position.y += jumpVelocity * delta;
-        jumpVelocity -= gravity * delta;
+        if (isJumping) {
+            player.position.y += jumpVelocity * delta;
+            jumpVelocity -= gravity * delta;
 
-        if (jumpVelocity <= 0) {
-          isJumping = false;
+            if (jumpVelocity <= 0) {
+                isJumping = false;
+            }
         }
-      }
     }
-  }
+}
 
-  function updateCamera() {
+function updateCamera() {
     if (player) {
-      camera.position.set(
-        player.position.x - Math.sin(player.rotation.y) * 0.9,
-        player.position.y + 0.45,
-        player.position.z - Math.cos(player.rotation.y) * 0.9
-      );
-      camera.lookAt(player.position);
+        camera.position.set(
+            player.position.x - Math.sin(player.rotation.y) * 0.9,
+            player.position.y + 0.45,
+            player.position.z - Math.cos(player.rotation.y) * 0.9
+        );
+        camera.lookAt(player.position);
     }
-  }
+}
 
-  function checkEndPoint() {
+function checkEndPoint() {
     if (player && endPoint) {
-      const distance = player.position.distanceTo(endPoint.position);
-      if (distance < 0.5) {
-        alert("You reached the end point! You win!");
-        stop();
-      }
+        const distance = player.position.distanceTo(endPoint.position);
+        if (distance < 0.5) {
+            alert("You reached the end point! You win!");
+            stop();
+        }
     }
-  }
+}
 
-  window.addEventListener('keydown', (event) => {
+window.addEventListener('keydown', (event) => {
     switch (event.key) {
-      case 'ArrowUp':
-        moveDirection.z = 1;
-        break;
-      case 'ArrowDown':
-        moveDirection.z = -1;
-        break;
-      case 'a':
-        playerRotationY += rotationSpeed;
-        break;
-      case 'd':
-        playerRotationY -= rotationSpeed;
-        break;
-      case ' ':
-        jumpPlayer();
-        break;
+        case 'ArrowUp':
+            moveDirection.z = 1;
+            break;
+        case 'ArrowDown':
+            if (isGrounded) {
+                moveDirection.z = -1;
+            }
+            break;
+        case 'a':
+            playerRotationY += rotationSpeed;
+            break;
+        case 'd':
+            playerRotationY -= rotationSpeed;
+            break;
+        case ' ':
+            jumpPlayer();
+            break;
     }
     if (player) {
-      player.rotation.y = playerRotationY;
+        player.rotation.y = playerRotationY;
     }
-  });
+});
 
   window.addEventListener('keyup', (event) => {
     switch (event.key) {
