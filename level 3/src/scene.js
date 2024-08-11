@@ -5,7 +5,7 @@ export function createScene() {
   const gameWindow = document.getElementById('render-target');
 
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x777777);
+  scene.background = 'public/sky box/Daylight Box_Top.bmp'
 
   const camera = createCamera(gameWindow);
 
@@ -19,19 +19,6 @@ export function createScene() {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
-
-const loader = new THREE.CubeTextureLoader();
-const skyboxTexture = loader.load([
-  '/assets/images/skybox_px.png', // Right
-  '/assets/images/skybox_nx.png', // Left
-  '/assets/images/skybox_py.png', // Top
-  '/assets/images/skybox_ny.png', // Bottom
-  '/assets/images/skybox_pz.png', // Front
-  '/assets/images/skybox_nz.png'  // Back
-]);
-
-// Set the skybox as the scene's background
-scene.background = skyboxTexture;
 
   let player = null;
   let endPoint = null;
@@ -121,7 +108,6 @@ function addRoads() {
             scene.add(lineMesh);
         }
     }
-   
     const wallHeight = 1; 
     const wallThickness = 0.5;
 
@@ -303,6 +289,11 @@ function applyGravity(delta) {
             if (player.position.y < 0.25) {
                 alert("You fell off the building! Game Over.");
                 stop();
+
+                // Option to restart the game
+                if (confirm("Do you want to play again?")) {
+                    restartGame();
+                }
             }
         }
 
@@ -316,6 +307,19 @@ function applyGravity(delta) {
         }
     }
 }
+
+function restartGame() {
+    // Clear previous scene objects
+    scene.clear();
+    
+    // Reinitialize the scene
+    initialize(city);
+
+    // Restart game loop
+    start();
+}
+
+
 
 function updateCamera() {
     if (player) {

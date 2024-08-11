@@ -10,3 +10,17 @@ html, body {
 #render-target {
     height: 100%;
 }
+
+#welcome-message {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 18px;
+    text-align: center;
+    z-index: 1000; /* Ensure it appears above other elements */
+}

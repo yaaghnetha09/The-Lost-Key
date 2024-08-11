@@ -5,3 +5,7 @@ export function createCamera(gameWindow) {
     camera.position.set(0, 10, 20);
     return camera;
 }
+
+  
+
+
