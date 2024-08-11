@@ -22,5 +22,5 @@ html, body {
     border-radius: 10px;
     font-size: 18px;
     text-align: center;
-    z-index: 1000; /* Ensure it appears above other elements */
+    z-index: 1000; 
 }

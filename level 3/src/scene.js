@@ -274,6 +274,7 @@ function jumpPlayer() {
         jumpVelocity = jumpSpeed;
     }
 }
+let hasFallen = false; // Add this flag to track if the player has fallen
 
 function applyGravity(delta) {
     if (player) {
@@ -286,14 +287,16 @@ function applyGravity(delta) {
             jumpVelocity -= gravity * delta;
             player.position.y += jumpVelocity * delta;
 
-            if (player.position.y < 0.25) {
+            // Check for player fall and ensure alert and redirection happen only once
+            if (player.position.y < 0.25 && !hasFallen) {
+                hasFallen = true; // Set the flag to prevent multiple triggers
                 alert("You fell off the building! Game Over.");
                 stop();
-
-                // Option to restart the game
-                if (confirm("Do you want to play again?")) {
-                    restartGame();
-                }
+            
+                // Use setTimeout to ensure alert is processed before redirecting
+                setTimeout(() => {
+                    window.location.href = 'http://127.0.0.1:5501/homepage/index.html';
+                }, 100); // 100 milliseconds delay
             }
         }
 
@@ -307,18 +310,6 @@ function applyGravity(delta) {
         }
     }
 }
-
-function restartGame() {
-    // Clear previous scene objects
-    scene.clear();
-    
-    // Reinitialize the scene
-    initialize(city);
-
-    // Restart game loop
-    start();
-}
-
 
 
 function updateCamera() {
@@ -338,6 +329,7 @@ function checkEndPoint() {
         if (distance < 0.5) {
             alert("You reached the end point! You win!");
             stop();
+            window.location.href = 'http://127.0.0.1:5501/homepage/index.html';
         }
     }
 }
