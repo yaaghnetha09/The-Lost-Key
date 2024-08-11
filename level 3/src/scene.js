@@ -49,20 +49,19 @@ function initialize(cityData) {
   scene.clear();
   allBuildingMeshes = [];
 
-  addRoads(); // Add continuous roads first
+  addRoads(); 
 
   for (let x = 0; x < city.size; x++) {
       for (let y = 0; y < city.size; y++) {
           const tile = city.data[x][y];
           if (tile.building) {
-             const height = Number(tile.building.slice(-1)); // Extract height from building description
+             const height = Number(tile.building.slice(-1)); 
               const buildingGeometry = new THREE.BoxGeometry(roadWidth, height, roadWidth);
 
               const textureIndex = (x + y) % textures.length; 
               const buildingMaterial = new THREE.MeshLambertMaterial({ map: textures[textureIndex] });
               const buildingMesh = new THREE.Mesh(buildingGeometry, buildingMaterial);
 
-              // Position the building on top of the road
               buildingMesh.position.set(x * roadWidth - (city.size * roadWidth) / 2 + roadWidth / 2, height / 2, y * roadWidth - (city.size * roadWidth) / 2 + roadWidth / 2);
 
               buildingMesh.userData = { height };
@@ -72,10 +71,10 @@ function initialize(cityData) {
       }
   }
 
-  player = createPlayerOnBuilding(); // Ensure the player is created after buildings
-  endPoint = createEndPointOnBuilding(); // Ensure the end point is created after buildings
+  player = createPlayerOnBuilding(); 
+  endPoint = createEndPointOnBuilding(); 
 
-  setupLights(); // Set up lights for better visibility
+  setupLights(); 
 }
 
 
@@ -157,7 +156,7 @@ function createPlayerOnBuilding() {
       }
   }
 
-  playerMesh.position.set(-4, 0.25, -4); // Default position if no building is found
+  playerMesh.position.set(-4, 0.25, -4); 
   scene.add(playerMesh);
   return playerMesh;
 }
@@ -183,7 +182,7 @@ function createEndPointOnBuilding() {
       }
   }
 
-  endPointMesh.position.set(4, 0.25, 4); // Default position if no building is found
+  endPointMesh.position.set(4, 0.25, 4); 
   scene.add(endPointMesh);
   return endPointMesh;
 }
@@ -231,7 +230,7 @@ function createEndPointOnBuilding() {
     if (player) {
         const moveSpeed = playerSpeed * delta;
 
-        // Prevent backward movement while jumping
+       
         if (isGrounded || moveDirection.z !== -1) {
             player.position.x += Math.sin(player.rotation.y) * moveDirection.z * moveSpeed;
             player.position.z += Math.cos(player.rotation.y) * moveDirection.z * moveSpeed;
@@ -274,7 +273,7 @@ function jumpPlayer() {
         jumpVelocity = jumpSpeed;
     }
 }
-let hasFallen = false; // Add this flag to track if the player has fallen
+let hasFallen = false; 
 
 function applyGravity(delta) {
     if (player) {
@@ -287,16 +286,15 @@ function applyGravity(delta) {
             jumpVelocity -= gravity * delta;
             player.position.y += jumpVelocity * delta;
 
-            // Check for player fall and ensure alert and redirection happen only once
             if (player.position.y < 0.25 && !hasFallen) {
-                hasFallen = true; // Set the flag to prevent multiple triggers
+                hasFallen = true; 
                 alert("You fell off the building! Game Over.");
                 stop();
             
-                // Use setTimeout to ensure alert is processed before redirecting
+                
                 setTimeout(() => {
                     window.location.href = 'http://127.0.0.1:5501/homepage/index.html';
-                }, 100); // 100 milliseconds delay
+                }, 100); 
             }
         }
 

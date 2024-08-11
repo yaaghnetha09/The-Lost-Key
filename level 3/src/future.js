@@ -7,8 +7,8 @@ export function createCity(size) {
             for (let y = 0; y < size; y++) {
                 const buildingChance = Math.random();
                 let building = undefined;
-                if (buildingChance < 0.4) { // 40% chance for a building
-                    const height = Math.floor(Math.random() * 3) + 1; // Building height between 1 and 3
+                if (buildingChance < 0.4) { 
+                    const height = Math.floor(Math.random() * 3) + 1;
                     building = `building-${height}`;
                 }
                 const tile = { 
