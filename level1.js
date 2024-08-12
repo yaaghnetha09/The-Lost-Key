@@ -40,6 +40,27 @@ const wallTexture = textureLoader.load(wallTextureUrl);
 const floorTextureUrl = './assets/textures/floor2.jpg';
 const floorTexture = textureLoader.load(floorTextureUrl);
 
+// Ceiling texture
+const ceilingTextureUrl = './assets/textures/floor2.jpg';
+const ceilingTexture = textureLoader.load(ceilingTextureUrl);
+
+// Set texture repeat to avoid stretching if necessary
+ceilingTexture.wrapS = THREE.RepeatWrapping;
+ceilingTexture.wrapT = THREE.RepeatWrapping;
+ceilingTexture.repeat.set(mazeWidth, mazeHeight);
+
+function createCeiling() {
+    const ceilingGeometry = new THREE.PlaneGeometry(mazeWidth, mazeHeight);
+    const ceilingMaterial = new THREE.MeshLambertMaterial({ map: ceilingTexture });
+    const ceiling = new THREE.Mesh(ceilingGeometry, ceilingMaterial);
+    ceiling.rotation.x = Math.PI / 2; // Rotate to horizontal
+    ceiling.position.y = 2; // Position it above the walls
+    scene.add(ceiling);
+}
+
+
+
+
 // Set texture repeat to avoid stretching
 floorTexture.wrapS = THREE.RepeatWrapping;
 floorTexture.wrapT = THREE.RepeatWrapping;
@@ -148,7 +169,7 @@ function generateMaze() {
 
 // Initial maze generation
 generateMaze();
-
+createCeiling();
 // Render loop
 function animate() {
     requestAnimationFrame(animate);
