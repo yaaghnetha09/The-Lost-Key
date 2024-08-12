@@ -58,9 +58,6 @@ function createCeiling() {
     scene.add(ceiling);
 }
 
-
-
-
 // Set texture repeat to avoid stretching
 floorTexture.wrapS = THREE.RepeatWrapping;
 floorTexture.wrapT = THREE.RepeatWrapping;
@@ -82,6 +79,28 @@ function shuffle(array) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
     }
+}
+
+// Initialize Audio Context and Load Sound
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+let collisionSoundBuffer;
+
+function loadSound(url) {
+    return fetch(url)
+        .then(response => response.arrayBuffer())
+        .then(data => audioContext.decodeAudioData(data))
+        .then(buffer => buffer);
+}
+
+loadSound('./assets/sound/collision.mp3').then(buffer => {
+    collisionSoundBuffer = buffer;
+});
+
+function playSound(buffer) {
+    const source = audioContext.createBufferSource();
+    source.buffer = buffer;
+    source.connect(audioContext.destination);
+    source.start(0);
 }
 
 function initializeMaze() {
@@ -227,6 +246,7 @@ function checkCollision() {
     for (let i = 0; i < mazeWalls.length; i++) {
         const wallBox = new THREE.Box3().setFromObject(mazeWalls[i]);
         if (playerBox.intersectsBox(wallBox)) {
+            playSound(collisionSoundBuffer);
             return true;
         }
     }
