@@ -10,12 +10,12 @@ const scene = new THREE.Scene();
 // Load skybox images
 const loader = new THREE.CubeTextureLoader();
 const skyboxTexture = loader.load([
-  '/assets/images/skybox_px.png', // Right
-  '/assets/images/skybox_nx.png', // Left
-  '/assets/images/skybox_py.png', // Top
-  '/assets/images/skybox_ny.png', // Bottom
-  '/assets/images/skybox_pz.png', // Front
-  '/assets/images/skybox_nz.png'  // Back
+  '/assets/images/le2/skybox_px.png', // Right
+  '/assets/images/le2/skybox_nx.png', // Left
+  '/assets/images/le2/skybox_py.png', // Top
+  '/assets/images/le2/skybox_ny.png', // Bottom
+  '/assets/images/le2/skybox_pz.png', // Front
+  '/assets/images/le2/skybox_nz.png'  // Back
 ]);
 
 
@@ -82,10 +82,10 @@ const player = new BasicCharacterController({ scene, walls });
 const clock = new THREE.Clock();
 
 //wall texture
-const snow_wall = '/assets/images/wall_stone.jpeg';
+const snow_wall = '/assets/images/le2/wall_stone.jpeg';
 
 //floor texture
-const snow_floor = '/assets/images/snow_floor.jpg';
+const snow_floor = '/assets/images/le2/snow_floor.jpg';
 
 // Wall dimensions
 const wall_height = 7;
@@ -98,7 +98,7 @@ const end_point = {i: 9, j: 0};
 
 
 //fetching of the maze data from mazeData.json file
-fetch('./mazeData.json')
+fetch('/level\ 2/map/mazeData.json')
 .then(response => {
   if (!response.ok) {
     throw new Error('Network response was not ok');
