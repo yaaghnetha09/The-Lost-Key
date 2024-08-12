@@ -2,6 +2,7 @@ import * as THREE from "three";
 // import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js';
 import { BasicCharacterController } from "./player.js";
 import {ThirdpersonCameraDemo} from "./camera.js";
+import { MiniMap } from "./minimap.js";
 
 //scene creation
 const scene = new THREE.Scene();
@@ -16,6 +17,7 @@ const skyboxTexture = loader.load([
   '/assets/images/skybox_pz.png', // Front
   '/assets/images/skybox_nz.png'  // Back
 ]);
+
 
 // Set the skybox as the scene's background
 scene.background = skyboxTexture;
@@ -66,7 +68,7 @@ const snow_wall = '/assets/images/drystonewall.webp';
 
 
 // Wall dimensions
-const wall_height = 6;
+const wall_height = 7;
 const wall_width = 0.5;
 const cell_size = 10;
 
@@ -88,13 +90,52 @@ fetch('./mazeData.json')
   //to avoid NaN error, used maximum i and j and calculated maze width and height
   const maze_width = mazeData.reduce((max, cell) => Math.max(max, cell.i), 0) + 1;
   const maze_height = mazeData.reduce((max, cell) => Math.max(max, cell.j), 0) + 1;
+  const miniMap = new MiniMap(maze_width, maze_height);
+
+  // Draw the maze layout on the minimap using your existing mazeData
+  miniMap.drawMaze(mazeData);
+
+  // Draw the start and end points on the minimap
+  // miniMap.draw(start_point.i, start_point.j, 'player'); // Player start position
+  // miniMap.draw(end_point.i, end_point.j, 'end'); // End point
+
   create_floor(maze_width, maze_height, cell_size); //adding the floor;
   createMaze(mazeData);//adding the walls;
+
+  // rendering
+  function animate() {
+    requestAnimationFrame(animate);
+    // controls.update();
+    const delta = clock.getDelta();
+    //player updation in animation loop
+    player.Update(delta);
+    const playerPosition = {
+      x: Math.round(player.mesh.position.x / cell_size),
+      y: Math.round(player.mesh.position.z / cell_size)
+  };
+
+
+   // Update third-person camera
+   thirdPersonDemo._thirdPersonCamera.Update(delta);
+
+   miniMap.update(playerPosition); 
+
+    renderer.render(scene, camera);
+  }
+
   animate();
 })
 .catch(error =>{
   console.error('Error fetching the maze data:', error);
 });
+
+// Initialize and run the third-person camera demo
+const thirdPersonDemo = new ThirdpersonCameraDemo({ 
+  scene: scene,
+  camera: camera, 
+  walls: walls 
+});
+thirdPersonDemo._Initialize();
 
 
 //// wall creation
@@ -224,28 +265,9 @@ function add_markers(start, end) {
 
 
 
-//camera view
-camera.position.set(0, 65, 65);
-camera.lookAt(new THREE.Vector3(0, 0, 0));
+// //camera view
+// camera.position.set(0, 65, 65);
+// camera.lookAt(new THREE.Vector3(0, 0, 0));
 
 
-// rendering
-  function animate() {
-    requestAnimationFrame(animate);
-    // controls.update();
-    const delta = clock.getDelta();
-    //player updation in animation loop
-    player.Update(delta);
-    renderer.render(scene, camera);
-  }
 
-
-animate();
-
-// Initialize and run the third-person camera demo
-const thirdPersonDemo = new ThirdpersonCameraDemo({ 
-  scene: scene,
-  camera: camera, 
-  walls: walls 
-});
-thirdPersonDemo._Initialize();
