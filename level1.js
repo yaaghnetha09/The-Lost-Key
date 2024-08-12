@@ -169,7 +169,17 @@ function generateMaze() {
     // Start recursive backtracking from top-left corner
     carvePath(1, 1);
 
-    // Add boundary walls and maze walls
+    // Add boundary walls
+    for (let x = -1; x <= mazeWidth; x++) {
+        createWall(x - mazeWidth / 2, 1, -mazeHeight / 2 - 1); // Bottom boundary
+        createWall(x - mazeWidth / 2, 1, mazeHeight / 2);     // Top boundary
+    }
+    for (let z = 0; z < mazeHeight; z++) {
+        createWall(-mazeWidth / 2 - 1, 1, z - mazeHeight / 2); // Left boundary
+        createWall(mazeWidth / 2, 1, z - mazeHeight / 2);     // Right boundary
+    }
+
+    // Add internal maze walls
     for (let x = 0; x < mazeWidth; x++) {
         for (let z = 0; z < mazeHeight; z++) {
             if (maze[x][z]) {
@@ -184,12 +194,13 @@ function generateMaze() {
     endPoint = new THREE.Mesh(endPointGeometry, endPointMaterial);
     endPoint.position.set(mazeWidth / 2 - 2, 0.25, mazeHeight / 2 - 2);
     scene.add(endPoint);
+
+    // Add ceiling
+    createCeiling();
 }
 
-// Initial maze generation
 generateMaze();
-createCeiling();
-// Render loop
+
 function animate() {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
@@ -197,9 +208,6 @@ function animate() {
 }
 
 animate();
-
-// Player movement and collision detection
-let lastKey = '';
 
 function handleKeyDown(event) {
     const moveDistance = 0.1;
