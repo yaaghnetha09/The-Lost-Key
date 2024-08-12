@@ -14,7 +14,7 @@ export function createGame() {
   const game = {
     update() {
       city.update();
-      scene.update(city);
+      //scene.update(city);
     }
   };
 
@@ -23,6 +23,6 @@ export function createGame() {
   }
 
   setInterval(gameLoop, 1000);
-  scene.start();
+  //scene.start();
   return game;
 }

@@ -19,10 +19,15 @@
     <div id="render-target"></div>
   </div>
 
+  <div id="welcome-message">
+    <h1>Welcome to FutureVista</h1>
+    <p>Use arrow up and down keys for moving forward and back, space bar for jump, and A and D keys for rotation.</p>
+  </div>
+
   <script type="module">
     import { createGame } from './src/game.js';
 
-    window.onload = () =>{
+    window.onload = () => {
         window.game = createGame();
     }
   </script>

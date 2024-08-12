@@ -37,13 +37,12 @@ class BasicCharacterController{
         this.Player();
         this._target = this.mesh; //Initialize _target
 
-        // Initialize player bounding box
-        this.PlayerBB = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3());
-        this.PlayerBB.setFromObject(this.mesh);
       }
     
       //function to create player mesh
       Player(){
+        if (this.mesh) return; // Ensure the player is only created once
+        
             this.geometry = new THREE.BoxGeometry(3, 3, 3);
             this.material = new THREE.MeshBasicMaterial({ color: 0xFFC0CB });
             this.mesh = new THREE.Mesh(this.geometry, this.material);
@@ -51,6 +50,10 @@ class BasicCharacterController{
             // position, initial
             this.mesh.position.set(0, 0.5, 0);
             this._params.scene.add(this.mesh);
+
+            // Initialize player bounding box
+          this.PlayerBB = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3());
+          // this.PlayerBB.setFromObject(this.mesh);
         }
 
         get Position() {
@@ -351,7 +354,7 @@ class WalkState extends State {
     Exit() {
     }
   
-    Update(timeElapsed, input) {
+    Update(_, input) {
         if (input._keys.forward || input._keys.backward) {
             //if the player is previously in walk state then return
             return;
