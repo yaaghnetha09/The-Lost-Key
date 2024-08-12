@@ -38,6 +38,26 @@ renderer.setSize(w, h);
 document.body.appendChild(renderer.domElement);
 
 
+// Audio setup
+const listener = new THREE.AudioListener();
+camera.add(listener);
+
+// Collision sound
+const collisionSound = new THREE.Audio(listener);
+const collisionLoader = new THREE.AudioLoader();
+collisionLoader.load('/assets/sound/collision.mp3', function(buffer) {
+    collisionSound.setBuffer(buffer);
+    collisionSound.setVolume(0.5); // Adjust the volume as needed
+});
+
+// Success sound
+// const successSound = new THREE.Audio(listener);
+// const successLoader = new THREE.AudioLoader();
+// successLoader.load('/assets/sounds/success.mp3', function(buffer) {
+//     successSound.setBuffer(buffer);
+//     successSound.setVolume(0.5); // Adjust the volume as needed
+// });
+
 // //adding of OrbitControls
 // const controls = new OrbitControls(camera, renderer.domElement);
 // controls.enableZoom = true;
