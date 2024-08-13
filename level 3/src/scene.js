@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.152.0/examples/jsm/loaders/GLTFLoader.js';
 import { createCamera } from './camera.js';
 
 export function createScene() {
@@ -21,6 +22,7 @@ export function createScene() {
 });
 
   let player = null;
+  let isPlayerLoaded = false;
   let endPoint = null;
   let city = null;
   let allBuildingMeshes = [];
@@ -43,7 +45,9 @@ const textures = [
     textureLoader.load('public/Light blue tile Wall Online Zoom Background Template - VistaCreate.jpeg'), 
     textureLoader.load('public/Predio 6.jpeg')
 ];
+
 const roadWidth = 2; 
+
 function initialize(cityData) {
   city = cityData;
   scene.clear();
@@ -71,12 +75,22 @@ function initialize(cityData) {
       }
   }
 
-  player = createPlayerOnBuilding(); 
-  endPoint = createEndPointOnBuilding(); 
+  setupLights();
 
-  setupLights(); 
+  const loader = new GLTFLoader();
+loader.load('../character/charactermain.glb', function (gltf) {
+    player = gltf.scene;
+    player.scale.set(0.5, 0.5, 0.5);
+    isPlayerLoaded = true;
+    scene.add(player); 
+    checkModelLoaded();
+    player = createPlayerOnBuilding(); 
+    endPoint = createEndPointOnBuilding(); 
+}, undefined, function (error) {
+    console.error('An error happened while loading the model:', error);
+});
+  
 }
-
 
 function addRoads() {
     const roadMaterial = new THREE.MeshLambertMaterial({ color: 0x888888 });
@@ -135,31 +149,45 @@ function addRoads() {
     scene.add(rightWallMesh);
 }
 
-function createPlayerOnBuilding() {
-  const playerGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
-  const playerMaterial = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
-  const playerMesh = new THREE.Mesh(playerGeometry, playerMaterial);
 
-  for (let x = 0; x < city.size; x++) {
-      for (let y = 0; y < city.size; y++) {
-          const tile = city.data[x][y];
-          if (tile.building) {
-              const height = Number(tile.building.slice(-1));
-              playerMesh.position.set(
-                  x * roadWidth - (city.size * roadWidth) / 2 + roadWidth / 2,
-                  height + 0.25,
-                  y * roadWidth - (city.size * roadWidth) / 2 + roadWidth / 2
-              );
-              scene.add(playerMesh);
-              return playerMesh;
-          }
-      }
-  }
+function checkModelLoaded() {
+    if (!isPlayerLoaded) {
+        console.error('Player model is not loaded yet.');
+        return;
+    }
+    const boundingBox = new THREE.Box3().setFromObject(player);
+    if (boundingBox.isEmpty()) { 
+        requestAnimationFrame(checkModelLoaded);
+        return;
+    }
 
-  playerMesh.position.set(-4, 0.25, -4); 
-  scene.add(playerMesh);
-  return playerMesh;
+    createPlayerOnBuilding();
 }
+
+function createPlayerOnBuilding() {
+  
+    for (let x = 0; x < city.size; x++) {
+        for (let y = 0; y < city.size; y++) {
+            const tile = city.data[x][y];
+            if (tile.building) {
+                const height = Number(tile.building.slice(-1));
+                player.position.set(
+                    x * roadWidth - (city.size * roadWidth) / 2 + roadWidth / 2,
+                    height + 0.5,
+                    y * roadWidth - (city.size * roadWidth) / 2 + roadWidth / 2
+                );
+                scene.add(player);
+                return player;
+            }
+        }
+    }
+  
+    player.position.set(-4, 0.25, -4); 
+    scene.add(player);
+    return player;
+  }
+  
+
 
 function createEndPointOnBuilding() {
   const endPointGeometry = new THREE.SphereGeometry(0.25, 32, 32);
@@ -251,6 +279,9 @@ function createEndPointOnBuilding() {
                 if (player.position.y < buildingHeight) {
                     player.position.y = buildingHeight + 0.25;
                 }
+                const offset = playerBoundingBox.max.y - playerBoundingBox.min.y;
+                player.position.y += (buildingHeight + 0.25) - playerBoundingBox.max.y + offset;
+
                 isGrounded = true;
             }
         }
@@ -286,14 +317,14 @@ function applyGravity(delta) {
             jumpVelocity -= gravity * delta;
             player.position.y += jumpVelocity * delta;
 
-            if (player.position.y < 0.25 && !hasFallen) {
+            if (player.position.y < 0.25 && !hasFallen ){
                 hasFallen = true; 
                 alert("You fell off the building! Game Over.");
                 stop();
             
                 
                 setTimeout(() => {
-                    window.location.href = 'http://127.0.0.1:5501/homepage/index.html';
+                    //window.location.href = 'http://127.0.0.1:5501/homepage/index.html';
                 }, 100); 
             }
         }
@@ -327,7 +358,7 @@ function checkEndPoint() {
         if (distance < 0.5) {
             alert("You reached the end point! You win!");
             stop();
-            window.location.href = 'http://127.0.0.1:5501/homepage/index.html';
+            //window.location.href = 'http://127.0.0.1:5501/homepage/index.html';
         }
     }
 }
