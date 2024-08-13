@@ -30,7 +30,7 @@ let player;
 let playerLoaded = false;
 let treasureChestLoaded = false;
 
-loader.load('../character/boyfinal.glb', (gltf) => {
+loader.load('../character/charactermain.glb', (gltf) => {
     player = gltf.scene;
     player.scale.set(0.5, 0.5, 0.5); 
     player.position.set(-mazeWidth / 2 + 1, 0.5, -mazeHeight / 2 + 1);
@@ -284,7 +284,7 @@ function checkCollision() {
             console.log('You have reached the treasure chest!');
             alert('You reached the treasure chest!');
             generateMaze();
-            window.location.href = './http://127.0.0.1:5501/level%202/index.html';
+            window.location.href = 'http://127.0.0.1:5501/level%202/index.html';
             return;
         }
     }
