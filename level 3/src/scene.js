@@ -36,10 +36,12 @@ export function createScene() {
 
   let moveDirection = { x: 0, z: 0 };
   let playerRotationY = 0;
-  let rotationSpeed = 0.05;
+  let rotationDelta = 0;
+  let rotationSpeed = 0.05 ;
+  
 
   
-  const textureLoader = new THREE.TextureLoader();
+const textureLoader = new THREE.TextureLoader();
 const textures = [
     textureLoader.load('public/Prédio 1.jpeg'), 
     textureLoader.load('public/Light blue tile Wall Online Zoom Background Template - VistaCreate.jpeg'), 
@@ -236,6 +238,7 @@ function createEndPointOnBuilding() {
     applyGravity(delta);
     movePlayer(delta);
     updateCamera();
+    updateRotation(delta);
     checkEndPoint();
   }
 
@@ -254,7 +257,59 @@ function createEndPointOnBuilding() {
   function stop() {
     renderer.setAnimationLoop(null);
   }
-  function movePlayer(delta) {
+  let hasFallen = false; 
+  
+
+function jumpPlayer() {
+    if (isGrounded) {
+        isJumping = true;
+        jumpVelocity = jumpSpeed;
+        isGrounded = false;
+    }
+}
+
+function applyGravity(delta) {
+    if (player) {
+        if (isGrounded) {
+            player.position.y = Math.floor(player.position.y) + 0.25;
+            if (!isJumping) {
+                jumpVelocity = 0;
+            }
+        } else {
+            jumpVelocity -= gravity * delta;
+            player.position.y += jumpVelocity * delta;
+
+            if (player.position.y < 0.25 && !hasFallen ){
+                hasFallen = true; 
+                alert("You fell off the building! Game Over.");
+                stop();
+            
+                
+                setTimeout(() => {
+                    window.location.href = 'http://127.0.0.1:5501/homepage/index.html';
+                }, 100); 
+            }
+
+        }
+
+        if (isJumping) {
+            player.position.y += jumpVelocity * delta;
+            jumpVelocity -= gravity * delta;
+
+            if (jumpVelocity <= 0) {
+                isJumping = false;
+            }
+        }
+    }
+}
+function updateRotation(delta) {
+    if (player) {
+        playerRotationY += rotationDelta;
+        player.rotation.y = playerRotationY;
+    }
+}
+
+function movePlayer(delta) {
     if (player) {
         const moveSpeed = playerSpeed * delta;
 
@@ -292,55 +347,6 @@ function createEndPointOnBuilding() {
     }
 }
 
-function rotatePlayer(rotationDelta) {
-    if (player) {
-        player.rotation.y += rotationDelta * rotationSpeed;
-    }
-}
-
-function jumpPlayer() {
-    if (isGrounded) {
-        isJumping = true;
-        jumpVelocity = jumpSpeed;
-    }
-}
-let hasFallen = false; 
-
-function applyGravity(delta) {
-    if (player) {
-        if (isGrounded) {
-            player.position.y = Math.floor(player.position.y) + 0.25;
-            if (!isJumping) {
-                jumpVelocity = 0;
-            }
-        } else {
-            jumpVelocity -= gravity * delta;
-            player.position.y += jumpVelocity * delta;
-
-            if (player.position.y < 0.25 && !hasFallen ){
-                hasFallen = true; 
-                alert("You fell off the building! Game Over.");
-                stop();
-            
-                
-                setTimeout(() => {
-                    //window.location.href = 'http://127.0.0.1:5501/homepage/index.html';
-                }, 100); 
-            }
-        }
-
-        if (isJumping) {
-            player.position.y += jumpVelocity * delta;
-            jumpVelocity -= gravity * delta;
-
-            if (jumpVelocity <= 0) {
-                isJumping = false;
-            }
-        }
-    }
-}
-
-
 function updateCamera() {
     if (player) {
         camera.position.set(
@@ -358,7 +364,7 @@ function checkEndPoint() {
         if (distance < 0.5) {
             alert("You reached the end point! You win!");
             stop();
-            //window.location.href = 'http://127.0.0.1:5501/homepage/index.html';
+            window.location.href = 'http://127.0.0.1:5501/homepage/index.html';
         }
     }
 }
@@ -374,11 +380,13 @@ window.addEventListener('keydown', (event) => {
             }
             break;
         case 'a':
-            playerRotationY += rotationSpeed;
-            break;
+                rotationDelta = rotationSpeed;
+                break;
         case 'd':
-            playerRotationY -= rotationSpeed;
-            break;
+                rotationDelta = -rotationSpeed;
+                break;
+    
+        
         case ' ':
             jumpPlayer();
             break;
@@ -393,6 +401,10 @@ window.addEventListener('keydown', (event) => {
       case 'ArrowUp':
       case 'ArrowDown':
         moveDirection.z = 0;
+        break;
+    case 'a':
+    case 'd':
+        rotationDelta = 0; // Stop rotation when key is released
         break;
     }
   });
