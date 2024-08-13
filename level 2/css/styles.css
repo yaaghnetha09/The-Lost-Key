@@ -1,0 +1,30 @@
+* {
+  margin: 0;
+  overflow : hidden;
+}
+
+canvas { 
+  display: block; 
+}
+
+#loadingOverlay {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  width: 200px;
+  height: 100px;
+  background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent black background */
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* Ensure it's above other elements */
+  text-align: center;
+}
+
+#loadingMessage {
+  text-align: center;
+}

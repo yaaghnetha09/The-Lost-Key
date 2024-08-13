@@ -10,12 +10,12 @@ const scene = new THREE.Scene();
 // Load skybox images
 const loader = new THREE.CubeTextureLoader();
 const skyboxTexture = loader.load([
-  '/assets/images/skybox_px.png', // Right
-  '/assets/images/skybox_nx.png', // Left
-  '/assets/images/skybox_py.png', // Top
-  '/assets/images/skybox_ny.png', // Bottom
-  '/assets/images/skybox_pz.png', // Front
-  '/assets/images/skybox_nz.png'  // Back
+  '/assets/images/le2/skybox_px.png', // Right
+  '/assets/images/le2/skybox_nx.png', // Left
+  '/assets/images/le2/skybox_py.png', // Top
+  '/assets/images/le2/skybox_ny.png', // Bottom
+  '/assets/images/le2/skybox_pz.png', // Front
+  '/assets/images/le2/skybox_nz.png'  // Back
 ]);
 
 
@@ -38,6 +38,26 @@ renderer.setSize(w, h);
 document.body.appendChild(renderer.domElement);
 
 
+// Audio setup
+const listener = new THREE.AudioListener();
+camera.add(listener);
+
+// Collision sound
+const collisionSound = new THREE.Audio(listener);
+const collisionLoader = new THREE.AudioLoader();
+collisionLoader.load('/assets/sound/collision.mp3', function(buffer) {
+    collisionSound.setBuffer(buffer);
+    collisionSound.setVolume(0.5); // Adjust the volume as needed
+});
+
+// Success sound
+// const successSound = new THREE.Audio(listener);
+// const successLoader = new THREE.AudioLoader();
+// successLoader.load('/assets/sounds/success.mp3', function(buffer) {
+//     successSound.setBuffer(buffer);
+//     successSound.setVolume(0.5); // Adjust the volume as needed
+// });
+
 // //adding of OrbitControls
 // const controls = new OrbitControls(camera, renderer.domElement);
 // controls.enableZoom = true;
@@ -47,9 +67,9 @@ document.body.appendChild(renderer.domElement);
 //lighting
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(ambientLight);
-const pointLight = new THREE.PointLight(0xffffff, 1);
-pointLight.position.set(50, 50, 50);
-scene.add(pointLight);
+// const pointLight = new THREE.PointLight(0xffffff, 1);
+// pointLight.position.set(50, 50, 50);
+// scene.add(pointLight);
 
 // a list to update the walls to player.js file, pushed each wall in line 138
 const walls = [];
@@ -62,10 +82,10 @@ const player = new BasicCharacterController({ scene, walls });
 const clock = new THREE.Clock();
 
 //wall texture
-const snow_wall = '/assets/images/drystonewall.webp';
+const snow_wall = '/assets/images/le2/wall_stone.jpeg';
 
 //floor texture
-
+const snow_floor = '/assets/images/le2/snow_floor.jpg';
 
 // Wall dimensions
 const wall_height = 7;
@@ -78,7 +98,7 @@ const end_point = {i: 9, j: 0};
 
 
 //fetching of the maze data from mazeData.json file
-fetch('./mazeData.json')
+fetch('/level\ 2/map/mazeData.json')
 .then(response => {
   if (!response.ok) {
     throw new Error('Network response was not ok');
@@ -95,11 +115,7 @@ fetch('./mazeData.json')
   // Draw the maze layout on the minimap using your existing mazeData
   miniMap.drawMaze(mazeData);
 
-  // Draw the start and end points on the minimap
-  // miniMap.draw(start_point.i, start_point.j, 'player'); // Player start position
-  // miniMap.draw(end_point.i, end_point.j, 'end'); // End point
-
-  create_floor(maze_width, maze_height, cell_size); //adding the floor;
+  create_floor(maze_width, maze_height, cell_size, snow_floor); //adding the floor;
   createMaze(mazeData);//adding the walls;
 
   // rendering
@@ -109,16 +125,18 @@ fetch('./mazeData.json')
     const delta = clock.getDelta();
     //player updation in animation loop
     player.Update(delta);
-    const playerPosition = {
-      x: Math.round(player.mesh.position.x / cell_size),
-      y: Math.round(player.mesh.position.z / cell_size)
-  };
+    
+    const playerPosition = player.mesh.position;
+    console.log("Player Position:", playerPosition);
+    console.log("End Marker Position:", endMarker.position);
 
+    miniMap.update({ x: Math.round(playerPosition.x / cell_size), y: Math.round( playerPosition.z / cell_size) });
 
-   // Update third-person camera
-   thirdPersonDemo._thirdPersonCamera.Update(delta);
-
-   miniMap.update(playerPosition); 
+    // Check for collision with the end marker
+    if (checkCollisionWithEndMarker(playerPosition, endMarker)) {
+      console.log("Reached End Point!");
+      loadLevel3();
+    }
 
     renderer.render(scene, camera);
   }
@@ -137,6 +155,19 @@ const thirdPersonDemo = new ThirdpersonCameraDemo({
 });
 thirdPersonDemo._Initialize();
 
+// Function to load level 3
+function loadLevel3() {
+  console.log("Loading level 3...");
+  // Logic to transition to level 3 (e.g., reset the game state, load new maze, etc.)
+  // Show the loading overlay
+  const overlay = document.getElementById('loadingOverlay');
+  overlay.style.display = 'flex';
+
+  // Redirect to level 3 after a short delay
+  setTimeout(() => {
+    window.location.href = '/level\ 3/index.html'; // Update with the correct path to level 3
+  }, 3000); // 3-second delay
+}
 
 //// wall creation
   //maze creation
@@ -211,10 +242,7 @@ thirdPersonDemo._Initialize();
     walls.push(wall);
   }
 
-  
-
-function create_floor(maze_width, maze_height, cell_size) {
-
+function create_floor(maze_width, maze_height, cell_size, snow_floor) {
   console.log('creating floor with dimensions:', maze_width, maze_height, cell_size);
   if (isNaN(maze_width) || isNaN(maze_height) || isNaN(cell_size)) {
     console.error('Invalid dimensions for floor:', {maze_width,maze_height,cell_size});
@@ -222,7 +250,9 @@ function create_floor(maze_width, maze_height, cell_size) {
   }
 
   const floorGeometry = new THREE.PlaneGeometry(maze_width*cell_size, maze_height*cell_size);
-  const floorMaterial = new THREE.MeshBasicMaterial({color: 0x000ff0, side: THREE.DoubleSide});
+  // const texture = new THREE.TextureLoader().load(snow_floor);
+  // const floorMaterial = new THREE.MeshBasicMaterial({map: texture, side: THREE.DoubleSide});
+  const floorMaterial = new THREE.MeshBasicMaterial({color: 0x000000, side: THREE.DoubleSide});
   const floor = new THREE.Mesh(floorGeometry, floorMaterial);
 
   floor.rotation.x = Math.PI / 2; //to make the floor lie on xz plane;
@@ -249,10 +279,12 @@ function create_floor(maze_width, maze_height, cell_size) {
     marker.position.set(position.x, position.y, position.z);
 
     scene.add(marker);
+    return marker;
 }
 
 
 //add start and end markers
+let endMarker;
 function add_markers(start, end) {
   const startX = start.i * cell_size - cell_size / 2;
   const startZ = start.j * cell_size - cell_size / 2;
@@ -260,7 +292,14 @@ function add_markers(start, end) {
   const endZ = end.j * cell_size - cell_size / 2;
 
   createMarker(new THREE.Vector3(startX, 1, startZ), 0x00ff00); //green for start
-  createMarker(new THREE.Vector3(endX, 1, endZ), 0xff0000); //red for end
+  endMarker = createMarker(new THREE.Vector3(endX, 1, endZ), 0xff0000); //red for end
+}
+
+// Simple collision detection
+function checkCollisionWithEndMarker(playerPosition, marker) {
+  const distance = playerPosition.distanceTo(marker.position);
+  console.log("Distance to End Marker:", distance);
+  return distance < 73; // Assuming marker and player have a similar size
 }
 
 
