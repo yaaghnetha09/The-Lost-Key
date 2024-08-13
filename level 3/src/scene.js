@@ -2,6 +2,53 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.152.0/examples/jsm/loaders/GLTFLoader.js';
 import { createCamera } from './camera.js';
 
+function createKey() {
+    const keyGroup = new THREE.Group();
+    const rustBrownColor = 0x8B4513;
+
+    const shaftGeometry = new THREE.CylinderGeometry(0.05, 0.05, 1.2, 32); 
+    const shaftMaterial = new THREE.MeshStandardMaterial({ color: rustBrownColor });
+    const shaft = new THREE.Mesh(shaftGeometry, shaftMaterial);
+    keyGroup.add(shaft);
+
+    
+    const bowGeometry = new THREE.TorusGeometry(0.1, 0.02, 16, 100); 
+    const bowMaterial = new THREE.MeshStandardMaterial({ color: rustBrownColor });
+    const bow = new THREE.Mesh(bowGeometry, bowMaterial);
+    bow.position.set(0, 0.6, 0); 
+    bow.rotation.y = Math.PI / 2;
+    keyGroup.add(bow);
+
+    // Smaller teeth
+    const teethGeometry = new THREE.BoxGeometry(0.1, 0.05, 0.1); 
+    const teethMaterial = new THREE.MeshStandardMaterial({ color: rustBrownColor });
+
+    const teeth1 = new THREE.Mesh(teethGeometry, teethMaterial);
+    teeth1.position.set(0, -0.4, 0.1); 
+    teeth1.rotation.z = Math.PI / 2;
+    keyGroup.add(teeth1);
+
+    const teeth2 = teeth1.clone();
+    teeth2.position.y -= 0.2;
+    keyGroup.add(teeth2);
+
+    const teeth3 = teeth1.clone();
+    teeth3.position.y += 0.2; 
+    keyGroup.add(teeth3);
+
+    const shadowGeometry = new THREE.PlaneGeometry(0.4, 0.1); 
+    const shadowMaterial = new THREE.ShadowMaterial({ opacity: 0.5 });
+    const shadow = new THREE.Mesh(shadowGeometry, shadowMaterial);
+    shadow.rotation.x = -Math.PI / 2;
+    shadow.position.set(0, -0.6, 0); 
+    keyGroup.add(shadow);
+
+    return keyGroup;
+}
+
+
+
+
 export function createScene() {
   const gameWindow = document.getElementById('render-target');
 
@@ -21,6 +68,8 @@ export function createScene() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
+
+
   let player = null;
   let isPlayerLoaded = false;
   let endPoint = null;
@@ -38,9 +87,7 @@ export function createScene() {
   let playerRotationY = 0;
   let rotationDelta = 0;
   let rotationSpeed = 0.05 ;
-  
 
-  
 const textureLoader = new THREE.TextureLoader();
 const textures = [
     textureLoader.load('public/Prédio 1.jpeg'), 
@@ -192,29 +239,28 @@ function createPlayerOnBuilding() {
 
 
 function createEndPointOnBuilding() {
-  const endPointGeometry = new THREE.SphereGeometry(0.25, 32, 32);
-  const endPointMaterial = new THREE.MeshLambertMaterial({ color: 0xff0000 });
-  const endPointMesh = new THREE.Mesh(endPointGeometry, endPointMaterial);
+    const key = createKey(); // Create the key object as the endpoint
+    
 
   for (let x = city.size - 1; x >= 0; x--) {
       for (let y = city.size - 1; y >= 0; y--) {
           const tile = city.data[x][y];
           if (tile.building) {
               const height = Number(tile.building.slice(-1));
-              endPointMesh.position.set(
+              key.position.set(
                   x * roadWidth - (city.size * roadWidth) / 2 + roadWidth / 2,
                   height + 0.25,
                   y * roadWidth - (city.size * roadWidth) / 2 + roadWidth / 2
               );
-              scene.add(endPointMesh);
-              return endPointMesh;
+              scene.add(key);
+              return key;
           }
       }
   }
 
-  endPointMesh.position.set(4, 0.25, 4); 
-  scene.add(endPointMesh);
-  return endPointMesh;
+  key.position.set(4, 0.25, 4); 
+  scene.add(key);
+  return key;
 }
 
 
@@ -314,10 +360,10 @@ function movePlayer(delta) {
         const moveSpeed = playerSpeed * delta;
 
        
-        if (isGrounded || moveDirection.z !== -1) {
+        
             player.position.x += Math.sin(player.rotation.y) * moveDirection.z * moveSpeed;
             player.position.z += Math.cos(player.rotation.y) * moveDirection.z * moveSpeed;
-        }
+        
 
         player.position.x += Math.cos(player.rotation.y) * moveDirection.x * moveSpeed;
         player.position.z -= Math.sin(player.rotation.y) * moveDirection.x * moveSpeed;
@@ -338,6 +384,7 @@ function movePlayer(delta) {
                 player.position.y += (buildingHeight + 0.25) - playerBoundingBox.max.y + offset;
 
                 isGrounded = true;
+                break;
             }
         }
 
@@ -404,7 +451,7 @@ window.addEventListener('keydown', (event) => {
         break;
     case 'a':
     case 'd':
-        rotationDelta = 0; // Stop rotation when key is released
+        rotationDelta = 0; 
         break;
     }
   });
