@@ -1,3 +1,8 @@
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+
+const loader = new GLTFLoader();
+
 const scene = new THREE.Scene();
 const size = { width: window.innerWidth, height: window.innerHeight };
 const mazeWidth = Math.floor(size.width / 100);
@@ -21,11 +26,22 @@ directionalLight.position.set(5, 10, 7.5).normalize();
 scene.add(directionalLight);
 
 //player
-const playerGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
-const playerMaterial = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
-const player = new THREE.Mesh(playerGeometry, playerMaterial);
-player.position.set(-mazeWidth / 2 + 1, 0.25, -mazeHeight / 2 + 1);
-scene.add(player);
+let player;
+let playerLoaded = false;
+let treasureChestLoaded = false;
+
+loader.load('../character/boyfinal.glb', (gltf) => {
+    player = gltf.scene;
+    player.scale.set(0.5, 0.5, 0.5); 
+    player.position.set(-mazeWidth / 2 + 1, 0.5, -mazeHeight / 2 + 1);
+    scene.add(player);
+    playerLoaded = true;
+}, undefined, (error) => {
+    const box = new THREE.Box3().setFromObject(player);
+    console.log('Bounding box:', box);
+}, undefined, (error) => {
+    console.error('Error loading model:', error);
+});
 
 // Maze walls and treasure box
 let mazeWalls = [];
@@ -78,7 +94,6 @@ const directions = [
     { x: -1, z: 0 }  // Left
 ];
 
-// Utility function to shuffle an array
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -135,7 +150,7 @@ function carvePath(x, z) {
         const newZ = z + direction.z * 2;
 
         if (isValid(newX, newZ) && !visited[newX][newZ]) {
-            maze[x + direction.x][z + direction.z] = false; // carve between cells
+            maze[x + direction.x][z + direction.z] = false;
             carvePath(newX, newZ);
         }
     }
@@ -205,9 +220,13 @@ function animate() {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
     updateMiniMap();
+    if (playerLoaded && treasureChestLoaded) {
+        updateMiniMap();
+    }
 }
 
 animate();
+let lastKey;
 
 function handleKeyDown(event) {
     const moveDistance = 0.1;
@@ -226,10 +245,10 @@ function handleKeyDown(event) {
             player.position.x -= Math.sin(player.rotation.y) * moveDistance;
             player.position.z -= Math.cos(player.rotation.y) * moveDistance;
             break;
-        case 'ArrowLeft':
+        case 'a':
             rotationDelta = rotationSpeed;
             break;
-        case 'ArrowRight':
+        case 'd':
             rotationDelta = -rotationSpeed;
             break;
     }
@@ -265,7 +284,7 @@ function checkCollision() {
             console.log('You have reached the treasure chest!');
             alert('You reached the treasure chest!');
             generateMaze();
-            window.location.href = 'http://127.0.0.1:5501/level%202/index.html';
+            window.location.href = './http://127.0.0.1:5501/level%202/index.html';
             return;
         }
     }
@@ -283,6 +302,10 @@ window.addEventListener('resize', () => {
 });
 
 function updateMiniMap() {
+    if (!player || !treasureChest) {
+        console.warn('Player or treasure chest not loaded yet');
+        return;
+    }
     const miniMapCanvas = document.createElement('canvas');
     const miniMapWidth = 200;
     const miniMapHeight = 200;
