@@ -33,15 +33,15 @@ let treasureChest;
 
 // Wall texture
 const textureLoader = new THREE.TextureLoader();
-const wallTextureUrl = './assets/textures/wall2.jpg';
+const wallTextureUrl = '/assets/images/le1/wall2.jpg';
 const wallTexture = textureLoader.load(wallTextureUrl);
 
 //floor texture
-const floorTextureUrl = './assets/textures/floor2.jpg';
+const floorTextureUrl = '/assets/images/le1/floor2.jpg';
 const floorTexture = textureLoader.load(floorTextureUrl);
 
 // Ceiling texture
-const ceilingTextureUrl = './assets/textures/floor2.jpg';
+const ceilingTextureUrl = '/assets/images/le1/floor2.jpg';
 const ceilingTexture = textureLoader.load(ceilingTextureUrl);
 
 //texture repeat to avoid stretching
@@ -97,7 +97,7 @@ function loadSound(url) {
         .then(buffer => buffer);
 }
 
-loadSound('./assets/sound/collision.mp3').then(buffer => {
+loadSound('/assets/sound/collision.mp3').then(buffer => {
     collisionSoundBuffer = buffer;
 });
 
