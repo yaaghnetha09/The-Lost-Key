@@ -20,23 +20,23 @@ const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
 directionalLight.position.set(5, 10, 7.5).normalize();
 scene.add(directionalLight);
 
-// Create player
+//player
 const playerGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
 const playerMaterial = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
 const player = new THREE.Mesh(playerGeometry, playerMaterial);
 player.position.set(-mazeWidth / 2 + 1, 0.25, -mazeHeight / 2 + 1);
 scene.add(player);
 
-// Maze walls and end point
+// Maze walls and treasure box
 let mazeWalls = [];
-let endPoint;
+let treasureChest;
 
 // Wall texture
 const textureLoader = new THREE.TextureLoader();
 const wallTextureUrl = './assets/textures/wall2.jpg';
 const wallTexture = textureLoader.load(wallTextureUrl);
 
-// Load the floor texture
+//floor texture
 const floorTextureUrl = './assets/textures/floor2.jpg';
 const floorTexture = textureLoader.load(floorTextureUrl);
 
@@ -44,7 +44,7 @@ const floorTexture = textureLoader.load(floorTextureUrl);
 const ceilingTextureUrl = './assets/textures/floor2.jpg';
 const ceilingTexture = textureLoader.load(ceilingTextureUrl);
 
-// Set texture repeat to avoid stretching if necessary
+//texture repeat to avoid stretching
 ceilingTexture.wrapS = THREE.RepeatWrapping;
 ceilingTexture.wrapT = THREE.RepeatWrapping;
 ceilingTexture.repeat.set(mazeWidth, mazeHeight);
@@ -53,12 +53,17 @@ function createCeiling() {
     const ceilingGeometry = new THREE.PlaneGeometry(mazeWidth, mazeHeight);
     const ceilingMaterial = new THREE.MeshLambertMaterial({ map: ceilingTexture });
     const ceiling = new THREE.Mesh(ceilingGeometry, ceilingMaterial);
-    ceiling.rotation.x = Math.PI / 2; // Rotate to horizontal
-    ceiling.position.y = 2; // Position it above the walls
+    ceiling.rotation.x = Math.PI / 2; 
+    ceiling.position.y = 2;
     scene.add(ceiling);
 }
 
-// Set texture repeat to avoid stretching
+function createTreasureChest() {
+    const cubeSize = 0.5;
+    const cubeGeometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
+    const cubeMaterial = new THREE.MeshLambertMaterial({ color: 0xffff00 }); // Gold color
+    return new THREE.Mesh(cubeGeometry, cubeMaterial);
+}
 floorTexture.wrapS = THREE.RepeatWrapping;
 floorTexture.wrapT = THREE.RepeatWrapping;
 floorTexture.repeat.set(mazeWidth, mazeHeight);
@@ -81,7 +86,7 @@ function shuffle(array) {
     }
 }
 
-// Initialize Audio Context and Load Sound
+//Audio Context and Load Sound
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 let collisionSoundBuffer;
 
@@ -156,7 +161,7 @@ function generateMaze() {
     }
     mazeWalls = [];
 
-    // Create floor
+    //floor
     const floorGeometry = new THREE.PlaneGeometry(mazeWidth, mazeHeight);
     const floorMaterial = new THREE.MeshLambertMaterial({ map: floorTexture });
     const floor = new THREE.Mesh(floorGeometry, floorMaterial);
@@ -169,7 +174,7 @@ function generateMaze() {
     // Start recursive backtracking from top-left corner
     carvePath(1, 1);
 
-    // Add boundary walls
+    //boundary walls
     for (let x = -1; x <= mazeWidth; x++) {
         createWall(x - mazeWidth / 2, 1, -mazeHeight / 2 - 1); // Bottom boundary
         createWall(x - mazeWidth / 2, 1, mazeHeight / 2);     // Top boundary
@@ -179,7 +184,7 @@ function generateMaze() {
         createWall(mazeWidth / 2, 1, z - mazeHeight / 2);     // Right boundary
     }
 
-    // Add internal maze walls
+    //internal maze walls
     for (let x = 0; x < mazeWidth; x++) {
         for (let z = 0; z < mazeHeight; z++) {
             if (maze[x][z]) {
@@ -187,15 +192,10 @@ function generateMaze() {
             }
         }
     }
-
-    // Set end point position
-    const endPointGeometry = new THREE.SphereGeometry(0.25, 32, 32);
-    const endPointMaterial = new THREE.MeshLambertMaterial({ color: 0xff0000 });
-    endPoint = new THREE.Mesh(endPointGeometry, endPointMaterial);
-    endPoint.position.set(mazeWidth / 2 - 2, 0.25, mazeHeight / 2 - 2);
-    scene.add(endPoint);
-
-    // Add ceiling
+    treasureChest = createTreasureChest();
+    treasureChest.position.set(mazeWidth / 2 - 2, 0.25, mazeHeight / 2 - 2);
+    scene.add(treasureChest);
+    //ceiling
     createCeiling();
 }
 
@@ -259,14 +259,16 @@ function checkCollision() {
         }
     }
 
-    // Check if player reached the end point
-    const endPointBox = new THREE.Box3().setFromObject(endPoint);
-    if (playerBox.intersectsBox(endPointBox)) {
-        alert('You reached the end!');
-        generateMaze();
+    if (treasureChest) {
+        const chestBox = new THREE.Box3().setFromObject(treasureChest);
+        if (playerBox.intersectsBox(chestBox)) {
+            console.log('You have reached the treasure chest!');
+            alert('You reached the treasure chest!');
+            generateMaze();
+            window.location.href = 'http://127.0.0.1:5501/level%202/index.html';
+            return;
+        }
     }
-
-    return false;
 }
 
 window.addEventListener('keydown', handleKeyDown);
@@ -311,8 +313,8 @@ function updateMiniMap() {
 
     miniMapContext.fillStyle = '#f00';
     miniMapContext.fillRect(
-        (endPoint.position.x + mazeWidth / 2) * (miniMapWidth / mazeWidth),
-        (endPoint.position.z + mazeHeight / 2) * (miniMapHeight / mazeHeight),
+        (treasureChest.position.x + mazeWidth / 2) * (miniMapWidth / mazeWidth),
+        (treasureChest.position.z + mazeHeight / 2) * (miniMapHeight / mazeHeight),
         miniMapWidth / mazeWidth,
         miniMapHeight / mazeHeight
     );
