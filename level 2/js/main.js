@@ -41,6 +41,7 @@ const walls = [];
 const clock = new THREE.Clock();
 const snow_wall = '/assets/images/le2/wall_stone.jpeg';
 const snow_floor = '/assets/images/le2/snow_floor.jpg';
+const goldtex = '/assets/images/le2/gold_text.webp';
 const wall_height = 7;
 const wall_width = 0.5;
 const cell_size = 10;
@@ -227,8 +228,9 @@ function createEndMarker(end, cell_size) {
   const endZ = end.j * cell_size - cell_size / 2;
   const position = new THREE.Vector3(endX, 1, endZ);
 
-  const geometry = new THREE.SphereGeometry(1.5, 50, 50);
-  const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+  const geometry = new THREE.BoxGeometry(3, 3, 3);
+  const texture = new THREE.TextureLoader().load(goldtex);
+  const material = new THREE.MeshBasicMaterial({ map: texture });
   const marker = new THREE.Mesh(geometry, material);
 
   marker.position.copy(position);

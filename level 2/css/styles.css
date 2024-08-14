@@ -12,12 +12,12 @@ canvas {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 80%; 
-  height: 80%;
+  width: 75%; 
+  height: 75%;
   background-color: rgba(0, 0, 0, 0.8); 
   color: white;
   padding: 20px;
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 18px;
   display: flex;
   align-items: center;
@@ -29,4 +29,6 @@ canvas {
 
 #loadingMessage {
   text-align: center;
+  font-size: 50px;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }

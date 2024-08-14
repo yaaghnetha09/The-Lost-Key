@@ -85,7 +85,7 @@ export class Player {
         overlay.style.display = 'flex';
 
         setTimeout(() => {
-            window.location.href = '/level%303/index.html';
+            window.location.href = '/level%203/index.html';
         }, 8000); // 8 second delay
     }
 }
