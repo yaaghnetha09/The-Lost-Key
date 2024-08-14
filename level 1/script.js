@@ -32,7 +32,7 @@ let treasureChestLoaded = false;
 
 loader.load('../character/charactermain.glb', (gltf) => {
     player = gltf.scene;
-    player.scale.set(0.5, 0.5, 0.5); 
+    player.scale.set(0.3, 0.3, 0.3); 
     player.position.set(-mazeWidth / 2 + 1, 0.5, -mazeHeight / 2 + 1);
     scene.add(player);
     playerLoaded = true;
