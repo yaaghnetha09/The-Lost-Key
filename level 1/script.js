@@ -165,6 +165,25 @@ function createWall(x, y, z) {
     mazeWalls.push(wall);
 }
 
+function isValidEndPoint(x, z) {
+    const adjacentCells = [
+        { x: x - 1, z: z },
+        { x: x + 1, z: z },
+        { x: x, z: z - 1 },
+        { x: x, z: z + 1 }
+    ];
+
+    let wallCount = 0;
+
+    for (const cell of adjacentCells) {
+        if (isValid(cell.x, cell.z) && maze[cell.x][cell.z]) {
+            wallCount++;
+        }
+    }
+
+    return wallCount <= 2;
+}
+
 // Generate maze
 function generateMaze() {
     // Clear previous walls and floor
@@ -207,10 +226,18 @@ function generateMaze() {
             }
         }
     }
-    treasureChest = createTreasureChest();
-    treasureChest.position.set(mazeWidth / 2 - 2, 0.25, mazeHeight / 2 - 2);
-    scene.add(treasureChest);
-    //ceiling
+    let endPointFound = false;
+    for (let x = mazeWidth - 2; x >= 1 && !endPointFound; x--) {
+        for (let z = mazeHeight - 2; z >= 1 && !endPointFound; z--) {
+            if (!maze[x][z] && isValidEndPoint(x, z)) {
+                treasureChest = createTreasureChest();
+                treasureChest.position.set(x - mazeWidth / 2, 0.25, z - mazeHeight / 2);
+                scene.add(treasureChest);
+                endPointFound = true;
+            }
+        }
+    }
+   
     createCeiling();
 }
 
