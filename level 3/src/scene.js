@@ -325,16 +325,30 @@ function applyGravity(delta) {
             jumpVelocity -= gravity * delta;
             player.position.y += jumpVelocity * delta;
 
-            if (player.position.y < 0.25 && !hasFallen ){
+            if (player.position.y < 0.25 && !hasFallen) {
                 hasFallen = true; 
-                alert("You fell off the building! Game Over.");
-                stop();
             
+                const gameOverMessage = document.createElement('div');
+                gameOverMessage.innerText = "You fell off the building! Game Over.";
+                gameOverMessage.style.position = 'absolute';
+                gameOverMessage.style.top = '50%';
+                gameOverMessage.style.left = '50%';
+                gameOverMessage.style.transform = 'translate(-50%, -50%)';
+                gameOverMessage.style.padding = '20px';
+                gameOverMessage.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+                gameOverMessage.style.color = '#fff';
+                gameOverMessage.style.fontSize = '24px';
+                gameOverMessage.style.borderRadius = '10px';
+                document.body.appendChild(gameOverMessage);
+            
+                stop();
                 
+               
                 setTimeout(() => {
                     window.location.href = 'http://127.0.0.1:5501/homepage/index.html';
-                }, 100); 
+                }, 2000); 
             }
+            
 
         }
 
@@ -409,11 +423,29 @@ function checkEndPoint() {
     if (player && endPoint) {
         const distance = player.position.distanceTo(endPoint.position);
         if (distance < 0.5) {
-            alert("You reached the end point! You win!");
+            
+            const winMessage = document.createElement('div');
+            winMessage.innerText = "You reached the end point! You win!";
+            winMessage.style.position = 'absolute';
+            winMessage.style.top = '50%';
+            winMessage.style.left = '50%';
+            winMessage.style.transform = 'translate(-50%, -50%)';
+            winMessage.style.padding = '20px';
+            winMessage.style.backgroundColor = 'rgba(0, 128, 0, 0.8)';
+            winMessage.style.color = '#fff';
+            winMessage.style.fontSize = '24px';
+            winMessage.style.borderRadius = '10px';
+            document.body.appendChild(winMessage);
+    
             stop();
-            window.location.href = 'http://127.0.0.1:5501/homepage/index.html';
+            
+            
+            setTimeout(() => {
+                window.location.href = 'http://127.0.0.1:5501/homepage/index.html';
+            }, 2000); 
         }
     }
+    
 }
 
 window.addEventListener('keydown', (event) => {
