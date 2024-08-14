@@ -421,9 +421,12 @@ function updateCamera() {
 
 function checkEndPoint() {
     if (player && endPoint) {
-        const distance = player.position.distanceTo(endPoint.position);
-        if (distance < 0.5) {
-            
+        // Create bounding boxes for the player and the end point
+        const playerBox = new THREE.Box3().setFromObject(player);
+        const endPointBox = new THREE.Box3().setFromObject(endPoint);
+
+        // Check if the bounding boxes intersect (i.e., if the player is touching the end point)
+        if (playerBox.intersectsBox(endPointBox)) {
             const winMessage = document.createElement('div');
             winMessage.innerText = "You reached the end point! You win!";
             winMessage.style.position = 'absolute';
@@ -436,17 +439,16 @@ function checkEndPoint() {
             winMessage.style.fontSize = '24px';
             winMessage.style.borderRadius = '10px';
             document.body.appendChild(winMessage);
-    
+
             stop();
-            
-            
+
             setTimeout(() => {
                 window.location.href = 'http://127.0.0.1:5501/homepage/index.html';
             }, 2000); 
         }
     }
-    
 }
+
 
 window.addEventListener('keydown', (event) => {
     switch (event.key) {
