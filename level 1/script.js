@@ -272,10 +272,10 @@ function handleKeyDown(event) {
             player.position.x -= Math.sin(player.rotation.y) * moveDistance;
             player.position.z -= Math.cos(player.rotation.y) * moveDistance;
             break;
-        case 'a':
+        case 'ArrowLeft':
             rotationDelta = rotationSpeed;
             break;
-        case 'd':
+        case 'ArrowRight':
             rotationDelta = -rotationSpeed;
             break;
     }
