@@ -460,10 +460,10 @@ window.addEventListener('keydown', (event) => {
                 moveDirection.z = -1;
             }
             break;
-        case 'a':
+        case 'ArrowLeft':
                 rotationDelta = rotationSpeed;
                 break;
-        case 'd':
+        case 'ArrowRight':
                 rotationDelta = -rotationSpeed;
                 break;
     
@@ -483,8 +483,8 @@ window.addEventListener('keydown', (event) => {
       case 'ArrowDown':
         moveDirection.z = 0;
         break;
-    case 'a':
-    case 'd':
+    case 'ArrowLeft':
+    case 'ArrowRight':
         rotationDelta = 0; 
         break;
     }
