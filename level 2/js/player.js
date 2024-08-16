@@ -86,6 +86,6 @@ export class Player {
 
         setTimeout(() => {
             window.location.href = '/level%203/index.html';
-        }, 8000); // 8 second delay
+        }, 4000); // 8 second delay
     }
 }
