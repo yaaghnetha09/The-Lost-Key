@@ -60,7 +60,7 @@ function animate() {
 
     const playerPosition = player.player.position;
 
-    //update the minimap
+    // Update the minimap
     miniMap.update({
       x: Math.round(playerPosition.x / cell_size),
       y: Math.round(playerPosition.z / cell_size)
@@ -69,7 +69,6 @@ function animate() {
 
   renderer.render(scene, camera);
 }
-
 
 fetch('/level%202/map/mazeData.json')
   .then(response => {
@@ -91,7 +90,6 @@ fetch('/level%202/map/mazeData.json')
 
     miniMap.setEndPosition({ x: 9, y: 0.5 });
     
-   
     endMarker = createEndMarker(end_point, cell_size);
     if(endMarker != null){
       console.log("Created");
@@ -99,12 +97,12 @@ fetch('/level%202/map/mazeData.json')
       console.log("NO");
     }
 
-    //initialize the player and camera
-    player = new Player(scene, walls, endMarker);
+    // Initialize the player and camera
+    player = new Player(scene, walls, endMarker, camera); // Ensure camera is passed here
     return player.loadModel();
   })
   .then(() => {
-    //initialize the first-person camera after the player model is loaded
+    // Initialize the first-person camera after the player model is loaded
     firstPersonCamera = new FirstPersonCamera(camera, player.player);
     
     animate();
@@ -112,7 +110,6 @@ fetch('/level%202/map/mazeData.json')
   .catch(error => {
     console.error('Error fetching the maze data:', error);
   });
-
 
 // Handle Fullscreen on F11 Key
 window.addEventListener('keydown', (event) => {
@@ -128,7 +125,7 @@ window.addEventListener('keydown', (event) => {
     }
   }
 
-  //keyboard controls for player movement
+  // Keyboard controls for player movement
   switch (event.code) {
     case 'ArrowUp':
       player.setVelocity(0, 1);
@@ -149,7 +146,7 @@ window.addEventListener('keyup', () => {
   player.setVelocity(0, 0);
 });
 
-//handle Window Resize 
+// Handle Window Resize 
 window.addEventListener('resize', () => {
   const width = window.innerWidth;
   const height = window.innerHeight;
@@ -159,7 +156,6 @@ window.addEventListener('resize', () => {
 
   renderer.setSize(width, height);
 });
-
 
 // Function to create the floor
 function create_floor(maze_width, maze_height, cell_size, snow_floor) {
@@ -177,29 +173,29 @@ function create_floor(maze_width, maze_height, cell_size, snow_floor) {
   scene.add(floor);
 }
 
-//function to create the maze walls
+// Function to create the maze walls
 function createMaze(mazeData) {
   mazeData.forEach(cell => {
     const { i, j, walls } = cell;
     const x = i * cell_size;
     const z = j * cell_size;
 
-    if (walls[0]) { //top
+    if (walls[0]) { // top
       createWall(new THREE.Vector3(x - cell_size / 2, 0, z - cell_size / 2),
         new THREE.Vector3(x + cell_size / 2, 0, z - cell_size / 2),
         true, snow_wall);
     }
-    if (walls[1]) { //right
+    if (walls[1]) { // right
       createWall(new THREE.Vector3(x + cell_size / 2, 0, z - cell_size / 2),
         new THREE.Vector3(x + cell_size / 2, 0, z + cell_size / 2),
         false, snow_wall);
     }
-    if (walls[2]) { //bottom
+    if (walls[2]) { // bottom
       createWall(new THREE.Vector3(x - cell_size / 2, 0, z + cell_size / 2),
         new THREE.Vector3(x + cell_size / 2, 0, z + cell_size / 2),
         true, snow_wall);
     }
-    if (walls[3]) { //left
+    if (walls[3]) { // left
       createWall(new THREE.Vector3(x - cell_size / 2, 0, z - cell_size / 2),
         new THREE.Vector3(x - cell_size / 2, 0, z + cell_size / 2),
         false, snow_wall);
@@ -220,7 +216,7 @@ function createWall(start, end, isHorizontal, snow_wall) {
   wall.position.set(x, y, z);
 
   scene.add(wall);
-  walls.push(wall); // for collision detection
+  walls.push(wall); // For collision detection
 }
 
 function createEndMarker(end, cell_size) {
@@ -238,7 +234,3 @@ function createEndMarker(end, cell_size) {
 
   return marker;
 }
-
-// //camera view
-// camera.position.set(0, 65, 65);
-// camera.lookAt(new THREE.Vector3(0, 0, 0));
