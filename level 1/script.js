@@ -309,13 +309,19 @@ function checkCollision() {
         const chestBox = new THREE.Box3().setFromObject(treasureChest);
         if (playerBox.intersectsBox(chestBox)) {
             console.log('You have reached the treasure chest!');
-            alert('You reached the treasure chest!');
-            generateMaze();
-            window.location.href = 'http://127.0.0.1:5501/level%202/index.html';
+            // Display the overlay message
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.style.display = 'flex';
+
+            setTimeout(() => {
+                window.location.href = '/level%202/index.html';  // Change the URL to load level 2
+            }, 4000);  // Wait for 4 seconds before loading the next level
+
             return;
         }
     }
 }
+
 
 window.addEventListener('keydown', handleKeyDown);
 
