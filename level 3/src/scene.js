@@ -1,3 +1,4 @@
+
 import * as THREE from 'three';
 import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.152.0/examples/jsm/loaders/GLTFLoader.js';
 import { createCamera } from './camera.js';
@@ -45,9 +46,6 @@ function createKey() {
 
     return keyGroup;
 }
-
-
-
 
 export function createScene() {
   const gameWindow = document.getElementById('render-target');
@@ -324,24 +322,31 @@ function applyGravity(delta) {
         } else {
             jumpVelocity -= gravity * delta;
             player.position.y += jumpVelocity * delta;
-
             if (player.position.y < 0.25 && !hasFallen) {
                 hasFallen = true; 
+            const gameOverMessage = document.createElement('div');
+            gameOverMessage.innerText = "You fell off the building! Game Over.";
+            gameOverMessage.style.position = 'absolute';
+            gameOverMessage.style.top = '50%';
+            gameOverMessage.style.left = '50%';
+            gameOverMessage.style.transform = 'translate(-50%, -50%)';
+            gameOverMessage.style.padding = '20px';
+            gameOverMessage.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+            gameOverMessage.style.color = '#fff';
+            gameOverMessage.style.fontSize = '24px';
+            gameOverMessage.style.borderRadius = '10px';
+            document.body.appendChild(gameOverMessage);
+        
+            stop();
             
-                // Show the game over message overlay
-                const overlay = document.getElementById('loadingOverlay');
-                const gameOverMessage = document.getElementById('loadingMessage');
-                gameOverMessage.innerText = 'Game Over. Loading level 3 again...'; 
-                overlay.style.display = 'flex';
-
-                setTimeout(() => {
-                    window.location.reload();  // Redirect to level 2
-                }, 4000); 
-
-                stop(); 
-                return;
-            }
+           
+            setTimeout(() => {
+                window.location.href = 'http://127.0.0.1:5501/homepage/index.html';
+            }, 2000); 
         }
+        
+
+    }
 
         if (isJumping) {
             player.position.y += jumpVelocity * delta;
@@ -420,17 +425,24 @@ function checkEndPoint() {
 
         // Check if the bounding boxes intersect (i.e., if the player is touching the end point)
         if (playerBox.intersectsBox(endPointBox)) {
-            const overlay = document.getElementById('loadingOverlay');
-            const gameOverMessage = document.getElementById('loadingMessage');
-            gameOverMessage.innerText = 'You Win! Congrats!'; 
-            overlay.style.display = 'flex';
+            const winMessage = document.createElement('div');
+            winMessage.innerText = "You reached the end point! You win!";
+            winMessage.style.position = 'absolute';
+            winMessage.style.top = '50%';
+            winMessage.style.left = '50%';
+            winMessage.style.transform = 'translate(-50%, -50%)';
+            winMessage.style.padding = '20px';
+            winMessage.style.backgroundColor = 'rgba(0, 128, 0, 0.8)';
+            winMessage.style.color = '#fff';
+            winMessage.style.fontSize = '24px';
+            winMessage.style.borderRadius = '10px';
+            document.body.appendChild(winMessage);
+
+            stop();
 
             setTimeout(() => {
-                window.location.href = '/homepage/index.html'; 
-            }, 4000); 
-
-            stop(); 
-            return;
+                window.location.href = 'http://127.0.0.1:5501/homepage/index.html';
+            }, 2000); 
         }
     }
 }
